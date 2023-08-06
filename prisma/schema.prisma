@@ -7,27 +7,3 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model product {
-  id       Int      @id
-  name     String   @db.VarChar(255)
-  price    Int
-  userId   Int
-  createAt DateTime @db.DateTime(0)
-  UpdateAT DateTime @db.DateTime(0)
-  uuid     String   @db.VarChar(36)
-  user     users    @relation(fields: [userId], references: [id], onUpdate: Restrict, map: "fk_product_user")
-
-  @@index([userId], map: "fk_product_user")
-}
-
-model users {
-  id       Int       @id
-  name     String    @db.VarChar(255)
-  email    String    @db.VarChar(255)
-  password String    @db.VarChar(255)
-  role     String    @db.VarChar(255)
-  createAt DateTime  @db.DateTime(0)
-  updateAt DateTime  @db.DateTime(0)
-  uuid     String    @db.VarChar(36)
-  products product[]
-}

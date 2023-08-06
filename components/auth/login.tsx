@@ -1,21 +1,25 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { signIn } from "next-auth/react";
 
-function login() {
-    const login = () => {
-        console.log("login");
+function Login() {
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        signIn('credentials', {
+            email,
+            password,
+            callbackUrl: "/tu-pagina-de-redireccion-despues-del-login" // opcional
+        });
     }
 
-
     return (
-        <Flex width="100%" p={4} borderBottom="1px solid gray" justifyContent="space-between" alignItems="center">
-            <Box>
-                <p>Bienvenido a tu espacio  !</p>
-            </Box>
-            <Button colorScheme="red" onClick={login}>Salir</Button>
-        </Flex>
-
-
+        <form onSubmit={handleLogin}>
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Contraseña" required />
+            <button type="submit">Iniciar sesión</button>
+        </form>
     );
 }
 
-export default login;
+export default Login;

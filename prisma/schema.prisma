@@ -16,3 +16,20 @@ model user {
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
+
+
+model pacientes {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String
+  clinicHistory String
+  patienDe String
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model odontograma {
+
+}

@@ -1,6 +1,16 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import {
+    Box,
+    Button,
+    FormControl,
+    FormLabel,
+    FormErrorMessage,
+    FormHelperText,
+    Select,
+    Input, Center
+} from '@chakra-ui/react'
 
 function SignIn() {
     const [errorMessage, setErrorMessage] = useState("");
@@ -53,24 +63,50 @@ function SignIn() {
     };
 
     return (
+        <Box width={["100%", "80%", "60%", "40%"]} mx="auto" mt={10}>
+        <Center m={4} spacing={4} mt={6} >
+            <h1>Registre un usuario</h1>
+        </Center>
+
         <form onSubmit={handleRegister}>
-            <input type="text" name="name" placeholder="Nombre" required />
-            <input type="email" name="email" placeholder="Email" required />
-            <input
-                type="password"
-                name="password"
-                placeholder="Contraseña"
-                required
-            />
-            <select name="role" required>
-                <option value="ADMINISTRADOR">Administrador</option>
-                <option value="ODONTOLOGO">Odontólogo</option>
-                <option value="PACIENTE">Paciente</option>
-            </select>
-            <button type="submit">Registrarse</button>
+            <Box m={4} spacing={4} mt={6}>
+                <FormControl>
+                    <FormLabel>Nombre : </FormLabel>
+                    <Input type="text" name="name" placeholder="Nombre" isRequired />
+                </FormControl>
+            </Box>
+
+            <Box m={4} spacing={4} textColor={"blue.900"}>
+                <FormControl>
+                    <FormLabel>Email : </FormLabel>
+                    <Input type="email" name="email" placeholder="Email" isRequired />
+                </FormControl>
+            </Box>
+
+            <Box m={4} spacing={4}>
+                <FormControl>
+                    <FormLabel>Contraseña : </FormLabel>
+                    <Input type="password" name="password" placeholder="Contraseña" isRequired/>
+                </FormControl>
+            </Box>
+
+            <Box m={4} spacing={4}>
+                <FormControl>
+                    <FormLabel>Role : </FormLabel>
+                    <Select name="role" placeholder='Select role' isRequired>
+                        <option value="ADMINISTRADOR">Administrador</option>
+                        <option value="ODONTOLOGO">Odontólogo</option>
+                        <option value="PACIENTE">Paciente</option>
+                    </Select>
+                </FormControl>
+            </Box>
+
+
+            <Button colorScheme='teal' type="submit">Registrar usuario</Button>
             {errorMessage && <p>{errorMessage}</p>}
             {successMessage && <p>{successMessage}</p>}
         </form>
+        </Box>
     );
 }
 

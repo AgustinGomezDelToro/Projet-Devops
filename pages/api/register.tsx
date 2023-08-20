@@ -11,18 +11,11 @@ export default async function handle(req, res) {
 
   const { name, email, password, role } = req.body;
 
-  // Validar el correo electrónico
+// Validar el correo electrónico
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
-    return res.status(400).json({ error: 'Email already in use' });
+    return res.status(400).json({ error: 'El email ya existe en nuestro sistema, por favor elige otro.' });
   }
-
-  // Validar la contraseña
-  if (password === 'azerty' || password === 'qwerty') {
-    return res.status(400).json({ error: 'Password is too weak' });
-  }
-
-  // Puedes agregar otras validaciones aquí según tus necesidades
 
 
   // Hashear la contraseña

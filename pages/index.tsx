@@ -1,12 +1,10 @@
 import React from 'react';
-import Head from 'next/head';
-import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import { Button, ButtonGroup, Flex, Box, Spacer } from "@chakra-ui/react";
 import { useRouter } from 'next/router';  // Importar useRouter
 
 export default function Home() {
-    const router = useRouter();  // Usar el hook
+    const router = useRouter();
 
     return (
         <div className={styles.container}>

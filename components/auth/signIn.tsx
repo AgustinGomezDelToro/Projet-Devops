@@ -5,6 +5,7 @@ import { Box, Button, FormControl, FormLabel, FormErrorMessage, Select, Input, C
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import Header from "../Header";
+import { loginUser } from '../auth/login.tsx';
 
 
 function SignIn() {
@@ -43,19 +44,10 @@ function SignIn() {
         setErrorMessage("");
         setSuccessMessage("Usuario registrado con éxito.");
 
-        try {
-            await signIn("credentials", {
-                email: values.email,
-                password: values.password,
-                callbackUrl: `${window.location.origin}/dashboard`,
-                redirect: false,
-            });
-            router.push("/dashboard");
-        } catch (error) {
-            setErrorMessage("Error durante el inicio de sesión");
-            actions.setSubmitting(false);
-        }
+        router.push("/dashboard");
     };
+
+
 
     return (
         <>
@@ -104,7 +96,7 @@ function SignIn() {
                                     <FormControl isInvalid={form.errors.role && form.touched.role}>
                                         <FormLabel>Role:</FormLabel>
                                         <Select {...field}>
-                                            <option value="" label="Select role" />
+                                            <option value="" label="Selecciona status" />
                                             <option value="ADMINISTRADOR" label="Administrador" />
                                             <option value="ODONTOLOGO" label="Odontólogo" />
                                             <option value="PACIENTE" label="Paciente" />

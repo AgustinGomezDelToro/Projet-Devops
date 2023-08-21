@@ -1,27 +1,35 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/router'; // Importa el hook useRouter de Next.js
+import { useRouter } from 'next/router';
+
+export const loginUser = async (credentials) => {
+    try {
+        const response = await axios.post('/api/auth/login', credentials);
+        if (response.data.message === "Inicio de sesión exitoso!") {
+            return true; // Retornar verdadero si el inicio de sesión es exitoso
+        } else {
+            console.log(response.data);
+            return false;
+        }
+    } catch (error) {
+        console.error("Hubo un error al iniciar sesión:", error.response?.data);
+        return false;
+    }
+};
 
 function Login() {
-    const router = useRouter(); // Inicializa el hook
-    const [credentials, setCredentials] = useState({"email": '', "password": ''});
+    const router = useRouter();
+    const [credentials, setCredentials] = useState({ "email": '', "password": '' });
 
     const handleChange = (e) => {
-        setCredentials({...credentials, [e.target.name]: e.target.value});
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('/api/auth/login', credentials);
-            if (response.data.message === "Inicio de sesión exitoso!") {
-                // Si el inicio de sesión es exitoso, redirige al usuario al dashboard
-                router.push('/dashboard');
-            } else {
-                console.log(response.data);
-            }
-        } catch (error) {
-            console.error("Hubo un error al iniciar sesión:", error.response?.data);
+        const loginSuccess = await loginUser(credentials);
+        if (loginSuccess) {
+            router.push('/dashboard');
         }
     };
 

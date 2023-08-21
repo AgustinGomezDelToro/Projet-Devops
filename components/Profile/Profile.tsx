@@ -21,7 +21,6 @@ function Profile() {
 
     return (
         <>
-            <Header />
             {userData && (
                 <div>
                     <p>{userData.name}</p>

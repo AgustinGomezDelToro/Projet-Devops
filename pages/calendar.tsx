@@ -1,11 +1,16 @@
-import Scheduler from '../components/Calendar/Calendar';
+import React from 'react';
+import CalendarComponent from '../components/Calendar/Calendar';
+import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
 
-function CalendarPage() {
+const Calendar: React.FC = () => {
     return (
-        <dashboardLayout>
-            <div>
-                <Calendar />
-            </div>
-        </dashboardLayout>
-    )
+        <DashboardLayout>
+        <div>
+            <h1>Mi Calendario</h1>
+            <CalendarComponent />
+        </div>
+        </DashboardLayout>
+    );
 }
+
+export default Calendar;

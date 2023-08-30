@@ -17,6 +17,13 @@ model user {
   updateAt  DateTime @updatedAt
 }
 
+model event {
+  id          Int      @id @default(autoincrement())
+  Subject     String
+  StartTime   DateTime
+  EndTime     DateTime
+  // otros campos que quieras añadir
+}
 
 model pacientes {
   id        Int      @id @default(autoincrement())

@@ -2,7 +2,7 @@ import React from 'react';
 import CalendarComponent from '../components/Calendar/Calendar';
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
 
-const Calendar: React.FC = () => {
+const Agenda: React.FC = () => {
     return (
         <DashboardLayout>
         <div>
@@ -13,4 +13,4 @@ const Calendar: React.FC = () => {
     );
 }
 
-export default Calendar;
+export default Agenda;

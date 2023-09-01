@@ -14,7 +14,7 @@ function MainContent({ activeView }) {
                     <p>Contenido de Agendas</p>
                 </Box>
             );
-        case 'Patients':
+        case 'Pacientes':
             return (
                 <Box flex="1" p={4}>
                     <p>Contenido de Pacientes</p>

@@ -1,16 +1,6 @@
-import {
-    Box,
-    Button,
-    Drawer,
-    useBreakpointValue,
-    DrawerBody,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
-    useDisclosure
-} from "@chakra-ui/react";
+import {Box, Button, Drawer, useBreakpointValue, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure} from "@chakra-ui/react";
+import Link from 'next/link';
+
 
 function Sidebar({ setActiveView }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -35,7 +25,7 @@ function Sidebar({ setActiveView }) {
                             <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('agendas')}>
                                 Agendas
                             </Button>
-                            <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('Patients')}>
+                            <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('Pacientes')}>
                                 Pacientes
                             </Button>
                             <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('odontograma')}>
@@ -51,18 +41,21 @@ function Sidebar({ setActiveView }) {
 
             {/* Enlaces de Navegación (visibles en tablets y escritorio) */}
             <Box display={displayMenuButton === "none" ? "block" : "none"}>
-                <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('home')}>
-                    Home
-                </Button>
-                <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('agendas')}>
-                    Agendas
-                </Button>
-                <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('Patients')}>
-                    Pacientes
-                </Button>
-                <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('odontograma')}>
-                    Odontograma
-                </Button>
+                <Link href="/home">
+                    <Button mb={4} width="100%" colorScheme="teal">
+                        Home
+                    </Button>
+                </Link>
+                <Link href="/agenda">
+                    <Button mb={4} width="100%" colorScheme="teal" >
+                        Agendas
+                    </Button>
+                </Link>
+                <Link href="/pacientes">
+                    <Button mb={4} width="100%" colorScheme="teal">
+                        Pacientes
+                    </Button>
+                </Link>
             </Box>
         </Box>
     );

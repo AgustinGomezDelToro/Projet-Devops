@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Header from "../Header";
 
 function Profile() {
     const [userData, setUserData] = useState(null);

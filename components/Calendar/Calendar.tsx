@@ -3,15 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import '@syncfusion/ej2-base/styles/material.css';
-import '@syncfusion/ej2-buttons/styles/material.css';
-import '@syncfusion/ej2-calendars/styles/material.css';
-import '@syncfusion/ej2-dropdowns/styles/material.css';
-import '@syncfusion/ej2-inputs/styles/material.css';
-import '@syncfusion/ej2-navigations/styles/material.css';
-import '@syncfusion/ej2-popups/styles/material.css';
-import '@syncfusion/ej2-schedule/styles/material.css';
-import '@syncfusion/ej2-react-schedule/styles/material.css';
+
 
 
 const CalendarComponent: React.FC = () => {

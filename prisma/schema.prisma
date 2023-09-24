@@ -15,6 +15,7 @@ model user {
   role      String
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
+  events    event[]  // Una relación uno a muchos con el modelo 'event'
 }
 
 model event {
@@ -22,19 +23,23 @@ model event {
   Subject     String
   StartTime   DateTime
   EndTime     DateTime
-  // otros campos que quieras añadir
+  PatientId   Int
+  Patient     pacientes @relation(fields: [PatientId], references: [id])
+  userId      Int?
+  user        user?     @relation(fields: [userId], references: [id])
 }
 
 model pacientes {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      String
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  password    String
+  role        String
   clinicHistory String
-  patienDe String
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  patienDe    String
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
+  events      event[]  // Relación uno a muchos con el modelo 'event'
 }
 
 model odontograma {

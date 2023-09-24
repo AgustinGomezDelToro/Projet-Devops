@@ -30,8 +30,8 @@ function Header() {
     };
 
     return (
-        <Flex width="100%" p={4} borderBottom="1px solid gray" justifyContent="space-between" alignItems="center">
-            <Box>
+        <Flex width="100%" p={4} borderBottom="0px solid gray" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" justifyContent="center" >
                 <p>Bienvenido {user?.name} !</p>
             </Box>
             <Flex alignItems="center">

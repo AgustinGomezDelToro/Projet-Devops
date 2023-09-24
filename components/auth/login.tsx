@@ -10,7 +10,7 @@ export const loginUser = async (credentials) => {
     try {
         const response = await axios.post('/api/auth/login', credentials);
         if (response.data.message === "Inicio de sesión exitoso!") {
-            return true;
+            return response.data.token;  // Devuelve el token en caso de éxito
         } else {
             console.log(response.data);
             return false;
@@ -33,10 +33,11 @@ function Login() {
     const [successMessage, setSuccessMessage] = useState(null);
 
     const handleSubmit = async (values, actions) => {
-        const loginSuccess = await loginUser(values);
+        const token = await loginUser(values); // Recibe el token o false si el inicio de sesión no es exitoso
         actions.setSubmitting(false);
 
-        if (loginSuccess) {
+        if (token) {
+
             setSuccessMessage("Inicio de sesión exitoso!");
             setErrorMessage(null);
             router.push('/dashboard');

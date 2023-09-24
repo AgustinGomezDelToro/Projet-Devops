@@ -10,9 +10,10 @@ export default function profileHandler(req, res) {
 
     try {
         const user = verify(myTokenName, process.env.JWT_SECRET);
-        console.log(user);
+        console.log("User decoded from token:", user);
         return res.json(user);
     } catch (error) {
+        console.error("Error verifying token:", error);
         return res.status(500).json({ message: "Token inválido o ha ocurrido un error al decodificarlo." });
     }
 }

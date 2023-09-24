@@ -41,32 +41,42 @@ const CalendarComponent: React.FC = () => {
 
         fetchProfile();
 
-        fetch('/api/Calendar')
-            .then((response) => {
+        async function fetchEvents() {
+            try {
+                const response = await fetch('/api/Calendar');
                 if (!response.ok) {
-                    throw new Error('Error al obtener los eventos');
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al obtener los eventos');
                 }
-                return response.json();
-            })
-            .then((data) => {
+                const data = await response.json();
                 const transformedEvents = data.map((event: any) => ({
                     title: event.Subject,
                     start: event.StartTime,
                     end: event.EndTime
                 }));
                 setEvents(transformedEvents);
-            })
-            .catch((error) => console.error("Error fetching events:", error));
+            } catch (error) {
+                console.error("Error fetching events:", error);
+            }
+        }
 
-        fetch('/api/Patients')
-            .then((response) => {
+        // Llamada a la API para obtener los pacientes
+        async function fetchPatients() {
+            try {
+                const response = await fetch('/api/Patients');
                 if (!response.ok) {
-                    throw new Error('Error al obtener los pacientes');
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al obtener los pacientes');
                 }
-                return response.json();
-            })
-            .then((data) => setPatients(data))
-            .catch((error) => console.error("Error fetching patients:", error));
+                const data = await response.json();
+                setPatients(data);
+            } catch (error) {
+                console.error("Error fetching patients:", error);
+            }
+        }
+
+        fetchEvents();
+        fetchPatients();
 
     }, []);
 

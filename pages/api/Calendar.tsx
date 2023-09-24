@@ -1,30 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
-import { parseISO, formatISO } from 'date-fns';
 
 const prisma = new PrismaClient();
 
 export default async function calendarHandler(req, res) {
     const { method } = req;
-
-    // Obtener el token desde el header Authorization
-    const authHeader = req.headers.authorization;
-    const myTokenName = authHeader && authHeader.split(' ')[1];
-
-    console.log("Token recibido en calendarHandler:", myTokenName); // Añadido
-
-    if (!myTokenName) {
-        return res.status(401).json({ message: "No estás autenticado." });
-    }
-
-    let userData;
-    try {
-        userData = jwt.verify(myTokenName, process.env.JWT_SECRET);
-        console.log("Datos del usuario después de la verificación:", userData); // Añadido
-    } catch (error) {
-        console.error("Error verifying token:", error);
-        return res.status(500).json({ message: "Token inválido o ha ocurrido un error al decodificarlo." });
-    }
 
     switch (method) {
         case 'GET':
@@ -38,35 +17,21 @@ export default async function calendarHandler(req, res) {
             break;
 
         case 'POST':
-            if (!userData.userId) {
-                console.error("ID de usuario no encontrado en el token:", userData);
-                return res.status(400).json({ error: "El ID del usuario es necesario para crear un evento." });
-            }
-
             const { Subject, StartTime, EndTime, PatientId } = req.body;
 
             try {
                 console.log("New Event Data:", req.body);
 
-                // Formatea las fechas a un formato completo ISO-8601 DateTime
-                const formattedStartTime = formatISO(parseISO(StartTime));
-                const formattedEndTime = formatISO(parseISO(EndTime));
-
                 const event = await prisma.event.create({
                     data: {
                         Subject: Subject,
-                        StartTime: formattedStartTime,
-                        EndTime: formattedEndTime,
+                        StartTime: StartTime,
+                        EndTime: EndTime,
                         Patient: {
                             connect: {
                                 id: PatientId,
                             }
                         },
-                        user: {
-                            connect: {
-                                id: userData.userId
-                            }
-                        }
                     },
                 });
 

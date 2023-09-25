@@ -19,7 +19,7 @@ const CalendarComponent: React.FC = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [eventColor, setEventColor] = useState('blue');
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-    const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+    const hours = Array.from({ length: 15 }, (_, i) => (i + 7).toString().padStart(2, '0'));
     const minutes = Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'));
     const [startHour, setStartHour] = useState('07');
     const [startMinute, setStartMinute] = useState('00');
@@ -244,10 +244,10 @@ const CalendarComponent: React.FC = () => {
                         <FormControl mt={4}>
                             <FormLabel>Inicio</FormLabel>
                             <Flex>
-                                <Select value={startHour} onChange={(e) => setStartHour(e.target.value)}>
+                                <Select value={startHour} onChange={(e) => setStartHour(e.target.value)} mr={4}>
                                     {hours.map(hour => <option key={hour} value={hour}>{hour}</option>)}
                                 </Select>
-                                <Select value={startMinute} onChange={(e) => setStartMinute(e.target.value)}>
+                                <Select value={startMinute} onChange={(e) => setStartMinute(e.target.value)} mr={4}>
                                     {minutes.map(minute => <option key={minute} value={minute}>{minute}</option>)}
                                 </Select>
                             </Flex>
@@ -256,10 +256,10 @@ const CalendarComponent: React.FC = () => {
                         <FormControl mt={4}>
                             <FormLabel>Fin</FormLabel>
                             <Flex>
-                                <Select value={endHour} onChange={(e) => setEndHour(e.target.value)}>
+                                <Select value={endHour} onChange={(e) => setEndHour(e.target.value)} mr={4}>
                                     {hours.map(hour => <option key={hour} value={hour}>{hour}</option>)}
                                 </Select>
-                                <Select value={endMinute} onChange={(e) => setEndMinute(e.target.value)}>
+                                <Select value={endMinute} onChange={(e) => setEndMinute(e.target.value)} mr={4}>
                                     {minutes.map(minute => <option key={minute} value={minute}>{minute}</option>)}
                                 </Select>
                             </Flex>

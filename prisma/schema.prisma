@@ -24,10 +24,12 @@ model event {
   StartTime   DateTime
   EndTime     DateTime
   PatientId   Int
+  Color       String?  // Nuevo campo para el color
   Patient     pacientes @relation(fields: [PatientId], references: [id])
   userId      Int?
   user        user?     @relation(fields: [userId], references: [id])
 }
+
 
 model pacientes {
   id          Int      @id @default(autoincrement())

@@ -17,7 +17,7 @@ export default async function calendarHandler(req, res) {
             break;
 
         case 'POST':
-            const { Subject, StartTime, EndTime, PatientId } = req.body;
+            const { Subject, StartTime, EndTime, PatientId, Color } = req.body;
 
             try {
                 console.log("New Event Data:", req.body);
@@ -27,6 +27,7 @@ export default async function calendarHandler(req, res) {
                         Subject: Subject,
                         StartTime: StartTime,
                         EndTime: EndTime,
+                        Color: Color,
                         Patient: {
                             connect: {
                                 id: PatientId,

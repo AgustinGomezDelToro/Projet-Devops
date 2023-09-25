@@ -15,20 +15,32 @@ const CalendarComponent: React.FC = () => {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const toast = useToast();
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [eventColor, setEventColor] = useState('blue');
 
     useEffect(() => {
         async function fetchEvents() {
             try {
+                console.log("Fetching events from API...");
                 const response = await fetch('/api/Calendar');
+                console.log("Response received:", response);
+
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Error al obtener los eventos');
+                    console.error("Response status:", response.status, "Response status text:", response.statusText);
+                    try {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Error al obtener los eventos');
+                    } catch (jsonError) {
+                        throw new Error('Error al obtener los eventos y al leer el error devuelto');
+                    }
                 }
                 const data = await response.json();
+                console.log("Data from API:", data);
                 const transformedEvents = data.map((event: any) => ({
                     title: event.Subject,
                     start: event.StartTime,
-                    end: event.EndTime
+                    end: event.EndTime,
+                    color: event.Color
                 }));
                 setEvents(transformedEvents);
             } catch (error) {
@@ -49,13 +61,17 @@ const CalendarComponent: React.FC = () => {
                 console.error("Error fetching patients:", error);
             }
         }
-
         fetchEvents();
         fetchPatients();
     }, []);
 
     const handleDateClick = (arg: any) => {
         setSelectedDate(arg.dateStr);
+        setIsOpen(true);
+    };
+
+    const handleEventClick = (info: any) => {
+        setSelectedEvent(info.event);
         setIsOpen(true);
     };
 
@@ -76,6 +92,7 @@ const CalendarComponent: React.FC = () => {
             StartTime: startDate.toISOString(),
             EndTime: endDate.toISOString(),
             PatientId: parseInt(selectedPatientId, 10),
+            Color: eventColor
         };
 
         try {
@@ -99,12 +116,15 @@ const CalendarComponent: React.FC = () => {
                 });
             } else {
                 const createdEvent = await response.json();
-                setEvents([...events, {
+                setEvents(prevEvents => [...prevEvents, {
                     title: createdEvent.event.Subject,
                     start: createdEvent.event.StartTime,
                     end: createdEvent.event.EndTime,
-                    patientId: createdEvent.event.PatientId
+                    patientId: createdEvent.event.PatientId,
+                    color: createdEvent.event.Color
                 }]);
+
+
 
                 setIsOpen(false);
                 toast({
@@ -138,6 +158,7 @@ const CalendarComponent: React.FC = () => {
                     right: 'dayGridMonth,timeGridWeek,timeGridDay',
                 }}
                 dateClick={handleDateClick}
+                eventClick={handleEventClick}
                 events={events}
             />
             <Modal isOpen={isOpen} onClose={handleClose}>
@@ -164,6 +185,19 @@ const CalendarComponent: React.FC = () => {
                                 {patients.map((patient) => (
                                     <option key={patient.id} value={patient.id}>{patient.name}</option>
                                 ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel>Color del evento</FormLabel>
+                            <Select
+                                placeholder="Seleccione color"
+                                value={eventColor}
+                                onChange={(e) => setEventColor(e.target.value)}
+                            >
+                                <option value="blue">Azul</option>
+                                <option value="red">Rojo</option>
+                                <option value="green">Verde</option>
+                                <option value="yellow">Amarillo</option>
                             </Select>
                         </FormControl>
                     </ModalBody>

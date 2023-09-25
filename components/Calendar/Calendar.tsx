@@ -3,13 +3,14 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, useToast } from '@chakra-ui/react';
+import { Modal, ModalOverlay, Flex, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, useToast} from '@chakra-ui/react';
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const CalendarComponent: React.FC = () => {
     const [events, setEvents] = useState<any[]>([]);
     const [patients, setPatients] = useState<any[]>([]);
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedPatientId, setSelectedPatientId] = useState<string>('');
     const [subject, setSubject] = useState("");
     const [startTime, setStartTime] = useState("");
@@ -17,6 +18,14 @@ const CalendarComponent: React.FC = () => {
     const toast = useToast();
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [eventColor, setEventColor] = useState('blue');
+    const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+    const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+    const minutes = Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'));
+    const [startHour, setStartHour] = useState('07');
+    const [startMinute, setStartMinute] = useState('00');
+    const [endHour, setEndHour] = useState('21');
+    const [endMinute, setEndMinute] = useState('00');
+
 
     useEffect(() => {
         async function fetchEvents() {
@@ -66,14 +75,33 @@ const CalendarComponent: React.FC = () => {
     }, []);
 
     const handleDateClick = (arg: any) => {
-        setSelectedDate(arg.dateStr);
+        setSelectedDate(new Date(arg.dateStr));
         setIsOpen(true);
     };
 
+    const startDateTime = selectedDate ? new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        parseInt(startHour, 10),
+        parseInt(startMinute, 10)
+    ) : new Date();
+
+    const endDateTime = selectedDate ? new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        parseInt(endHour, 10),
+        parseInt(endMinute, 10)
+    ) : new Date();
+
+
     const handleEventClick = (info: any) => {
         setSelectedEvent(info.event);
+        setSelectedEventId(info.event.id);  // New line
         setIsOpen(true);
     };
+
 
     const handleClose = () => {
         setIsOpen(false);
@@ -89,12 +117,11 @@ const CalendarComponent: React.FC = () => {
 
         const eventData = {
             Subject: subject,
-            StartTime: startDate.toISOString(),
-            EndTime: endDate.toISOString(),
+            StartTime: startDateTime.toISOString(),
+            EndTime: endDateTime.toISOString(),
             PatientId: parseInt(selectedPatientId, 10),
             Color: eventColor
         };
-
         try {
             const response = await fetch('/api/createCalendarEvent', {
                 method: 'POST',
@@ -147,11 +174,54 @@ const CalendarComponent: React.FC = () => {
         }
     };
 
+    const handleDelete = async () => {
+        if (selectedEventId) {
+            try {
+                const response = await fetch('/api/Calendar', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: selectedEventId }),
+                });
+
+                if (response.ok) {
+                    setEvents(prevEvents => prevEvents.filter(event => event.id !== selectedEventId));
+                    setIsOpen(false);
+                    toast({
+                        title: "Evento eliminado.",
+                        description: "El evento ha sido eliminado con éxito.",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al eliminar el evento');
+                }
+            } catch (error) {
+                toast({
+                    title: "Error al eliminar evento.",
+                    description: error.message,
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
+        }
+    };
+
+
+
+
     return (
         <div>
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
+                locale="es"
+                slotDuration="00:05:00"
+                slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
@@ -173,11 +243,26 @@ const CalendarComponent: React.FC = () => {
                         </FormControl>
                         <FormControl mt={4}>
                             <FormLabel>Inicio</FormLabel>
-                            <Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+                            <Flex>
+                                <Select value={startHour} onChange={(e) => setStartHour(e.target.value)}>
+                                    {hours.map(hour => <option key={hour} value={hour}>{hour}</option>)}
+                                </Select>
+                                <Select value={startMinute} onChange={(e) => setStartMinute(e.target.value)}>
+                                    {minutes.map(minute => <option key={minute} value={minute}>{minute}</option>)}
+                                </Select>
+                            </Flex>
                         </FormControl>
+
                         <FormControl mt={4}>
                             <FormLabel>Fin</FormLabel>
-                            <Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+                            <Flex>
+                                <Select value={endHour} onChange={(e) => setEndHour(e.target.value)}>
+                                    {hours.map(hour => <option key={hour} value={hour}>{hour}</option>)}
+                                </Select>
+                                <Select value={endMinute} onChange={(e) => setEndMinute(e.target.value)}>
+                                    {minutes.map(minute => <option key={minute} value={minute}>{minute}</option>)}
+                                </Select>
+                            </Flex>
                         </FormControl>
                         <FormControl mt={4}>
                             <FormLabel>Paciente</FormLabel>
@@ -197,13 +282,15 @@ const CalendarComponent: React.FC = () => {
                                 <option value="blue">Azul</option>
                                 <option value="red">Rojo</option>
                                 <option value="green">Verde</option>
-                                <option value="yellow">Amarillo</option>
+                                <option value="#DAA520">Amarillo</option>
                             </Select>
                         </FormControl>
                     </ModalBody>
                     <ModalFooter>
+                        <Button onClick={handleDelete} colorScheme="red" leftIcon={<DeleteIcon />} mr={3}>Eliminar</Button>
                         <Button onClick={handleSubmit} colorScheme="blue">Guardar</Button>
                     </ModalFooter>
+
                 </ModalContent>
             </Modal>
         </div>

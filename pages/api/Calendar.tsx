@@ -22,18 +22,24 @@ export default async function calendarHandler(req, res) {
             try {
                 console.log("New Event Data:", req.body);
 
+                const eventData = {
+                    Subject: Subject,
+                    StartTime: StartTime,
+                    EndTime: EndTime,
+                    Color: Color,
+                };
+
+                // Si PatientId es proporcionado, entonces lo añadimos a la conexión
+                if (PatientId) {
+                    eventData.Patient = {
+                        connect: {
+                            id: PatientId,
+                        }
+                    };
+                }
+
                 const event = await prisma.event.create({
-                    data: {
-                        Subject: Subject,
-                        StartTime: StartTime,
-                        EndTime: EndTime,
-                        Color: Color,
-                        Patient: {
-                            connect: {
-                                id: PatientId,
-                            }
-                        },
-                    },
+                    data: eventData,
                 });
 
                 res.status(201).json(event);
@@ -42,6 +48,25 @@ export default async function calendarHandler(req, res) {
                 res.status(500).json({ error: "No se pudo crear el evento", details: e.message });
             }
             break;
+
+
+        case 'DELETE':
+            const { id } = req.body;
+
+            try {
+                await prisma.event.delete({
+                    where: {
+                        id: id,
+                    },
+                });
+
+                res.status(200).json({ message: "Evento eliminado con éxito" });
+            } catch (e) {
+                console.error("Error al eliminar el evento:", e);
+                res.status(500).json({ error: "No se pudo eliminar el evento", details: e.message });
+            }
+            break;
+
 
         default:
             res.setHeader('Allow', ['GET', 'POST']);

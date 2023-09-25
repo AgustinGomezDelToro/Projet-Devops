@@ -267,10 +267,12 @@ const CalendarComponent: React.FC = () => {
                         <FormControl mt={4}>
                             <FormLabel>Paciente</FormLabel>
                             <Select onChange={(e) => setSelectedPatientId(e.target.value)}>
+                                <option value="">Sin paciente</option>
                                 {patients.map((patient) => (
                                     <option key={patient.id} value={patient.id}>{patient.name}</option>
                                 ))}
                             </Select>
+
                         </FormControl>
                         <FormControl mt={4}>
                             <FormLabel>Color del evento</FormLabel>

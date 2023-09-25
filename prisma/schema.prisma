@@ -23,9 +23,9 @@ model event {
   Subject     String
   StartTime   DateTime
   EndTime     DateTime
-  PatientId   Int
+  PatientId   Int?
   Color       String?  // Nuevo campo para el color
-  Patient     pacientes @relation(fields: [PatientId], references: [id])
+  Patient     pacientes? @relation(fields: [PatientId], references: [id])
   userId      Int?
   user        user?     @relation(fields: [userId], references: [id])
 }

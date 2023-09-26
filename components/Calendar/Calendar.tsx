@@ -11,12 +11,10 @@ const CalendarComponent: React.FC = () => {
     const [patients, setPatients] = useState<any[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [selectedPatientId, setSelectedPatientId] = useState<string>('');
+    const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
     const [subject, setSubject] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
     const toast = useToast();
-    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
     const [eventColor, setEventColor] = useState('blue');
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
     const hours = Array.from({ length: 15 }, (_, i) => (i + 7).toString().padStart(2, '0'));
@@ -25,6 +23,9 @@ const CalendarComponent: React.FC = () => {
     const [startMinute, setStartMinute] = useState('00');
     const [endHour, setEndHour] = useState('21');
     const [endMinute, setEndMinute] = useState('00');
+    const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+
+
 
 
     useEffect(() => {
@@ -49,13 +50,29 @@ const CalendarComponent: React.FC = () => {
                     title: event.Subject,
                     start: event.StartTime,
                     end: event.EndTime,
-                    color: event.Color
+                    color: event.Color,
+                    patientId: event.PatientId
                 }));
                 setEvents(transformedEvents);
             } catch (error) {
                 console.error("Error fetching events:", error);
             }
         }
+
+        const fetchEventById = async (id: string) => {
+            try {
+                const response = await fetch(`/api/Calendar/${id}`);
+                if (!response.ok) {
+                    throw new Error('Error al obtener el evento');
+                }
+                const event = await response.json();
+                console.log("Event data:", event);
+                // Aquí puedes decidir qué hacer con los datos del evento
+                // Por ejemplo, guardar en el estado, mostrar en una modal, etc.
+            } catch (error) {
+                console.error("Error fetching the event:", error);
+            }
+        };
 
         async function fetchPatients() {
             try {
@@ -65,11 +82,13 @@ const CalendarComponent: React.FC = () => {
                     throw new Error(errorData.message || 'Error al obtener los pacientes');
                 }
                 const data = await response.json();
+                console.log("Data from Pacientes API:", data); // Agrega este log
                 setPatients(data);
             } catch (error) {
                 console.error("Error fetching patients:", error);
             }
         }
+
         fetchEvents();
         fetchPatients();
     }, []);
@@ -98,8 +117,8 @@ const CalendarComponent: React.FC = () => {
 
     const handleEventClick = (info: any) => {
         setSelectedEvent(info.event);
-        setSelectedEventId(info.event.id);  // New line
-        setIsOpen(true);
+        setSelectedEventId(info.event.id);
+        setIsEventModalOpen(true);
     };
 
 
@@ -108,8 +127,8 @@ const CalendarComponent: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        const startDate = new Date(`${selectedDate}T${startTime}:00`);
-        const endDate = new Date(`${selectedDate}T${endTime}:00`);
+        const startDate = new Date(`${selectedDate}T${startHour}:00`);
+        const endDate = new Date(`${selectedDate}T${endHour}:00`);
 
         if (endDate.getTime() <= startDate.getTime()) {
             endDate.setDate(endDate.getDate() + 1);
@@ -212,6 +231,14 @@ const CalendarComponent: React.FC = () => {
     };
 
 
+    const patientName = selectedEvent && patients.find(patient => patient.id === selectedEvent.patientId)?.name || 'Desconocido';
+    console.log("Selected Event's PatientId:", selectedEvent?.PatientId);
+
+    const testPatient = patients.find(p => p.id === 1);
+    console.log("Test Patient:", testPatient);
+    console.log("List of patients:", patients);
+    console.log("Selected Event:", selectedEvent);
+
 
 
     return (
@@ -231,6 +258,35 @@ const CalendarComponent: React.FC = () => {
                 eventClick={handleEventClick}
                 events={events}
             />
+            <Modal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Detalles del Evento</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <FormControl >
+                            <FormLabel>Asunto</FormLabel>
+                            <Input value={selectedEvent?.title} isReadOnly />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel>Inicio</FormLabel>
+                            <Input value={selectedEvent?.start?.toLocaleString()} isReadOnly />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel>Fin</FormLabel>
+                            <Input value={selectedEvent?.end?.toLocaleString()} isReadOnly />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel>Paciente</FormLabel>
+                            <Input value={patientName} isReadOnly />
+                        </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={() => setIsEventModalOpen(false)}>Cerrar</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
             <Modal isOpen={isOpen} onClose={handleClose}>
                 <ModalOverlay />
                 <ModalContent>

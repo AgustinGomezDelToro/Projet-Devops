@@ -6,8 +6,8 @@ export default async (req, res) => {
     }
 
     const API_URL = process.env.NODE_ENV === 'production'
-        ? 'https://tu-dominio-en-produccion.com/api/Calendar'
-        : 'http://localhost:3000/api/Calendar';
+        ? 'https://tu-dominio-en-produccion.com/api/Calendar/Calendar'
+        : 'http://localhost:3000/api/Calendar/Calendar';
 
     try {
         const calendarResponse = await fetch(API_URL, {

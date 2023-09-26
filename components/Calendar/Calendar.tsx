@@ -33,7 +33,7 @@ const CalendarComponent: React.FC = () => {
         async function fetchEvents() {
             try {
                 console.log("Fetching events from API...");
-                const response = await fetch('/api/Calendar');
+                const response = await fetch('/api/Calendar/Calendar');
                 console.log("Response received:", response);
 
                 if (!response.ok) {
@@ -63,7 +63,7 @@ const CalendarComponent: React.FC = () => {
 
         const fetchEventById = async (id: string) => {
             try {
-                const response = await fetch(`/api/Calendar/${id}`);
+                const response = await fetch(`/api/Calendar/Calendar/${id}`);
                 if (!response.ok) {
                     throw new Error('Error al obtener el evento');
                 }
@@ -213,7 +213,7 @@ const CalendarComponent: React.FC = () => {
     const handleDelete = async () => {
         if (selectedEventId) {
             try {
-                const response = await fetch('/api/Calendar', {
+                const response = await fetch('/api/Calendar/Calendar', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

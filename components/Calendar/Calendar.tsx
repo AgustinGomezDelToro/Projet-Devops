@@ -158,7 +158,7 @@ const CalendarComponent: React.FC = () => {
         };
 
         try {
-            const response = await fetch('/api/createCalendarEvent', {
+            const response = await fetch('/api/Calendar/createCalendarEvent', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,4 +1,3 @@
-// /Applications/MAMP/htdocs/clinica-uja-next/clinica-uja/pages/api/profile.tsx
 import {verify} from 'jsonwebtoken';
 
 export default function profileHandler(req, res) {

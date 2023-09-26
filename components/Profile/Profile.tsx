@@ -10,7 +10,7 @@ function Profile() {
 
     const getProfile = async () => {
         try {
-            const response = await axios.get('/api/profile');
+            const response = await axios.get('/api/profile/profile');
             console.log(response.data);
             setUserData(response.data);
         } catch (error) {

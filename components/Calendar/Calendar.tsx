@@ -61,25 +61,10 @@ const CalendarComponent: React.FC = () => {
             }
         }
 
-        const fetchEventById = async (id: string) => {
-            try {
-                const response = await fetch(`/api/Calendar/Calendar/${id}`);
-                if (!response.ok) {
-                    throw new Error('Error al obtener el evento');
-                }
-                const event = await response.json();
-                console.log("Event data:", event);
-                // Aquí puedes decidir qué hacer con los datos del evento
-                // Por ejemplo, guardar en el estado, mostrar en una modal, etc.
-            } catch (error) {
-                console.error("Error fetching the event:", error);
-            }
-        };
-
 
         async function fetchPatients() {
             try {
-                const response = await fetch('/api/Patients');
+                const response = await fetch('/api/Patients/Patients');
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.message || 'Error al obtener los pacientes');

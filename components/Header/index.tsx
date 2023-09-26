@@ -10,7 +10,7 @@ function Header() {
     useEffect(() => {
         const getProfile = async () => {
             try {
-                const response = await axios.get('/api/profile');
+                const response = await axios.get('/api/profile/profile');
                 setUser(response.data);
             } catch (error) {
                 console.error("Error obteniendo el perfil:", error);

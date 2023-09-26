@@ -1,13 +1,39 @@
-app.get('/api/Calendar/:id', (req, res) => {
-    // Obtener el ID desde el parámetro de la ruta
-    const eventId = req.params.id;
+// /Applications/MAMP/htdocs/clinica-uja-next/clinica-uja/pages/api/Calendar/getPatientName.js
 
-    // Buscar el evento en tu base de datos o array
-    const event = calendarEvents.find(e => e.id === eventId);
+import { PrismaClient } from '@prisma/client';
 
-    if (event) {
-        res.json(event); // Si el evento se encuentra, se devuelve como respuesta
+const prisma = new PrismaClient();
+
+export default async function handler(req, res) {
+    if (req.method === 'GET') {
+        const { eventId } = req.query;
+
+        if (!eventId) {
+            return res.status(400).json({ error: 'El parámetro eventId es requerido' });
+        }
+
+        try {
+            const specificEventWithPatient = await prisma.event.findUnique({
+                where: {
+                    id: parseInt(eventId)
+                },
+                include: {
+                    Patient: true
+                }
+            });
+
+            if (!specificEventWithPatient) {
+                return res.status(404).json({ error: 'Evento no encontrado' });
+            }
+
+            const patientName = specificEventWithPatient.Patient?.name || 'Desconocido';
+            return res.status(200).json({ patientName });
+
+        } catch (error) {
+            console.error("Error al recuperar el evento y el paciente:", error);
+            return res.status(500).json({ error: 'Error interno del servidor' });
+        }
     } else {
-        res.status(404).send('Evento no encontrado'); // Si no se encuentra, devolver un error 404
+        return res.status(405).json({ error: 'Método no permitido' });
     }
-});
+}

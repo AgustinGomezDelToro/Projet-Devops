@@ -153,9 +153,10 @@ const CalendarComponent: React.FC = () => {
             Subject: subject,
             StartTime: startDateTime.toISOString(),
             EndTime: endDateTime.toISOString(),
-            PatientId: parseInt(selectedPatientId, 10),
+            PatientId: selectedPatientId ? parseInt(selectedPatientId, 10) : null,
             Color: eventColor
         };
+
         try {
             const response = await fetch('/api/createCalendarEvent', {
                 method: 'POST',
@@ -178,6 +179,7 @@ const CalendarComponent: React.FC = () => {
             } else {
                 const createdEvent = await response.json();
                 setEvents(prevEvents => [...prevEvents, {
+                    id: createdEvent.event.id,
                     title: createdEvent.event.Subject,
                     start: createdEvent.event.StartTime,
                     end: createdEvent.event.EndTime,
@@ -244,10 +246,6 @@ const CalendarComponent: React.FC = () => {
             }
         }
     };
-
-
-    const patientName = selectedEvent && patients.find(patient => patient.id === selectedEvent.PatientId)?.name || 'Desconocido';
-    console.log("Selected Event's PatientId:", selectedEvent?.extendedProps?.PatientId);
 
 
     const testPatient = patients.find(p => p.id === 1);

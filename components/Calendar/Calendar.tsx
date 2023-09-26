@@ -24,6 +24,7 @@ const CalendarComponent: React.FC = () => {
     const [endHour, setEndHour] = useState('21');
     const [endMinute, setEndMinute] = useState('00');
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+    const [selectedPatientName, setSelectedPatientName] = useState<string | null>(null);
 
 
 
@@ -47,11 +48,12 @@ const CalendarComponent: React.FC = () => {
                 const data = await response.json();
                 console.log("Data from API:", data);
                 const transformedEvents = data.map((event: any) => ({
+                    id: event.id,
                     title: event.Subject,
                     start: event.StartTime,
                     end: event.EndTime,
                     color: event.Color,
-                    patientId: event.PatientId
+                    patientId: event.PatientId,
                 }));
                 setEvents(transformedEvents);
             } catch (error) {
@@ -73,6 +75,7 @@ const CalendarComponent: React.FC = () => {
                 console.error("Error fetching the event:", error);
             }
         };
+
 
         async function fetchPatients() {
             try {
@@ -119,8 +122,20 @@ const CalendarComponent: React.FC = () => {
         setSelectedEvent(info.event);
         setSelectedEventId(info.event.id);
         setIsEventModalOpen(true);
-    };
 
+
+        const eventId = info.event.id;
+
+        fetch(`/api/Calendar/getPatientName?eventId=${eventId}`)
+            .then(response => response.json())
+            .then(data => {
+                setSelectedPatientName(data.patientName);
+            })
+            .catch(error => {
+                console.error("Error al obtener el nombre del paciente:", error);
+                setSelectedPatientName("Desconocido");  // O manejar el error de una forma más elegante
+            });
+    };
 
     const handleClose = () => {
         setIsOpen(false);
@@ -231,8 +246,9 @@ const CalendarComponent: React.FC = () => {
     };
 
 
-    const patientName = selectedEvent && patients.find(patient => patient.id === selectedEvent.patientId)?.name || 'Desconocido';
-    console.log("Selected Event's PatientId:", selectedEvent?.PatientId);
+    const patientName = selectedEvent && patients.find(patient => patient.id === selectedEvent.PatientId)?.name || 'Desconocido';
+    console.log("Selected Event's PatientId:", selectedEvent?.extendedProps?.PatientId);
+
 
     const testPatient = patients.find(p => p.id === 1);
     console.log("Test Patient:", testPatient);
@@ -276,10 +292,14 @@ const CalendarComponent: React.FC = () => {
                             <FormLabel>Fin</FormLabel>
                             <Input value={selectedEvent?.end?.toLocaleString()} isReadOnly />
                         </FormControl>
+
+
                         <FormControl mt={4}>
                             <FormLabel>Paciente</FormLabel>
-                            <Input value={patientName} isReadOnly />
+                            <Input value={selectedPatientName || "Desconocido"} isReadOnly />
                         </FormControl>
+
+
                     </ModalBody>
                     <ModalFooter>
                         <Button onClick={() => setIsEventModalOpen(false)}>Cerrar</Button>

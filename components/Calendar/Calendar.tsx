@@ -3,7 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { Modal, ModalOverlay, Flex, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, useToast} from '@chakra-ui/react';
+import { Box, Modal, ModalOverlay, Flex, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, useToast} from '@chakra-ui/react';
 import { DeleteIcon } from "@chakra-ui/icons";
 
 const CalendarComponent: React.FC = () => {
@@ -242,21 +242,23 @@ const CalendarComponent: React.FC = () => {
 
     return (
         <div>
-            <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth"
-                locale="es"
-                slotDuration="00:05:00"
-                slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
-                headerToolbar={{
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
-                }}
-                dateClick={handleDateClick}
-                eventClick={handleEventClick}
-                events={events}
-            />
+            <Box bg="white" shadow="base" borderRadius="lg" padding={5}>
+                <FullCalendar
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    locale="es"
+                    slotDuration="00:05:00"
+                    slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+                    headerToolbar={{
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    }}
+                    dateClick={handleDateClick}
+                    eventClick={handleEventClick}
+                    events={events}
+                />
+            </Box>
             <Modal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)}>
                 <ModalOverlay />
                 <ModalContent>

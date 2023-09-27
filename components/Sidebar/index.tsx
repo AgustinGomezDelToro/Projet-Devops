@@ -7,7 +7,7 @@ function Sidebar({ setActiveView }) {
     const displayMenuButton = useBreakpointValue({ base: "block", md: "none" });
 
     return (
-        <Box width={["100%", null, "20%"]} minHeight="100vh" borderRight="1px solid gray" p={4} position="relative">
+        <Box width={["100%", null, "20%"]} minHeight="100vh" borderRight="0px solid gray" p={4} position="relative" bg="white" boxShadow="lg"  >
             <Button onClick={onOpen} display={displayMenuButton} colorScheme="teal" mb={4} position="absolute" top="1rem" right="1rem">
                 Menú
             </Button>

@@ -7,7 +7,6 @@ const Calendar: React.FC = () => {
     return (
         <DashboardLayout>
             <div>
-                <h1>Mi lista de pacientes</h1>
                 <PatientsList />
             </div>
         </DashboardLayout>

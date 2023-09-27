@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
-import {  Input, Stack, Box, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
-
+import {
+    Input,
+    Stack,
+    Box,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    useColorModeValue,
+    Flex,
+    Heading
+} from "@chakra-ui/react";
 
 const PatientsList: React.FC = () => {
     const [patients, setPatients] = useState<any[]>([]);
@@ -47,41 +59,51 @@ const PatientsList: React.FC = () => {
         normalizeString(patient.name).includes(normalizeString(searchTerm))
     );
 
+    const bg = useColorModeValue('white', 'black');
+    const shadow = useColorModeValue('md', 'lg');
+
     return (
-        <Box overflowX="auto">
-            <Box mb={6} mt={3} ml={2} mr={2}>
-                <Stack spacing={6}>
+        <Flex direction="column" align="center" mt={10}>
+            <Heading mb={6}>Lista de Pacientes</Heading>
+            <Box
+                w={['90%', '85%', '95%']}
+                p={8}
+                bg={bg}
+                rounded="xl"
+                boxShadow="lg"  // Añade la sombra deseada aquí
+                mt={2}         // Ajusta el margen superior aquí
+            >
+                <Stack spacing={4} mb={4}>
                     <Input
                         size='md'
                         placeholder="Buscar paciente por nombre..."
-                        focusBorderColor='pink.400'
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </Stack>
-            </Box>
-            <Table w="full" size="sm" variant="striped" colorScheme="gray">
-                <Thead>
-                    <Tr>
-                        <Th>Nombre</Th>
-                        <Th>Email</Th>
-                        <Th>Teléfono</Th>
-                        <Th>Historia Clínica</Th>
-                        <Th>Paciente de</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    {filteredPatients.map(patient => (
-                        <Tr key={patient.id}>
-                            <Td>{patient.name}</Td>
-                            <Td>{patient.email}</Td>
-                            <Td>{patient.telephone}</Td>
-                            <Td>{patient.clinicHistory}</Td>
-                            <Td>{users[patient.patienDe] || "Desconocido"}</Td>
+                <Table variant="simple">
+                    <Thead>
+                        <Tr>
+                            <Th>Nombre</Th>
+                            <Th>Email</Th>
+                            <Th>Teléfono</Th>
+                            <Th>Historia Clínica</Th>
+                            <Th>Paciente de</Th>
                         </Tr>
-                    ))}
-                </Tbody>
-            </Table>
-        </Box>
+                    </Thead>
+                    <Tbody>
+                        {filteredPatients.map(patient => (
+                            <Tr key={patient.id}>
+                                <Td>{patient.name}</Td>
+                                <Td>{patient.email}</Td>
+                                <Td>{patient.telephone}</Td>
+                                <Td>{patient.clinicHistory}</Td>
+                                <Td>{users[patient.patienDe] || "Desconocido"}</Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            </Box>
+        </Flex>
     );
 };
 

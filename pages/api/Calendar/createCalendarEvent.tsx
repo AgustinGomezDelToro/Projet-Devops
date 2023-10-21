@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-unfetch';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async (req, res) => {
+export default async (req: NextApiRequest, res: NextApiResponse) =>  {
     if (req.method !== 'POST') {
         return res.status(405).end();
     }
@@ -27,8 +28,14 @@ export default async (req, res) => {
         return res.json({ success: true, event: data });
 
     } catch (error) {
-        console.error("Error al crear el evento en el calendario:", error.message);
-        return res.status(500).json({ error: 'Error al crear el evento en el calendario', details: error.message });
+        if (error instanceof Error) {
+            console.error("Error al crear el evento en el calendario:", error.message);
+            return res.status(500).json({ error: 'Error al crear el evento en el calendario', details: error.message });
+        } else {
+            // puedes manejar otros tipos de errores o rechazarlos aquí
+            console.error("Ocurrió un error desconocido");
+            return res.status(500).json({ error: 'Ocurrió un error desconocido' });
+        }
     }
 };
 

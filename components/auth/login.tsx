@@ -1,48 +1,56 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { Box, Button, Center, FormControl, FormLabel, FormErrorMessage, Input, Text, Heading } from '@chakra-ui/react';
-import { Field, Form, Formik } from 'formik';
+import { Box, Button, Stack, Center, FormControl, FormLabel, FormErrorMessage, Input, Text, Heading } from '@chakra-ui/react';
+import { Field, Form, Formik, FormikHelpers, FieldProps } from 'formik';
 import * as Yup from 'yup';
 
+interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
 // Función para iniciar sesión
-export const loginUser = async (credentials) => {
+export const loginUser = async (credentials: LoginCredentials): Promise<string | false> => {
     try {
         const response = await axios.post('/api/auth/login', credentials);
-        if (response.data.message === "Inicio de sesión exitoso!") {
-            return response.data.token;  // Devuelve el token en caso de éxito
+        if (response.data.message === "Connexion réussie !") { // Asegúrate de que este mensaje coincida con lo que tu backend envía
+            return response.data.token;
         } else {
             console.log(response.data);
             return false;
         }
     } catch (error) {
-        console.error("Hubo un error al iniciar sesión:", error.response?.data);
+        if (error instanceof Error) {
+            console.error("Erreur lors de la connexion :", error.message);
+        } else {
+            console.error("Erreur lors de la connexion :", error);
+        }
         return false;
     }
 };
 
 // Esquema de validación
 const validationSchema = Yup.object({
-    email: Yup.string().email('Correo no válido').required('Campo requerido'),
-    password: Yup.string().required('Campo requerido'),
+    email: Yup.string().email('Email non valide').required('Champ requis'),
+    password: Yup.string().required('Champ requis'),
 });
 
 function Login() {
     const router = useRouter();
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    const handleSubmit = async (values, actions) => {
-        const token = await loginUser(values); // Recibe el token o false si el inicio de sesión no es exitoso
+    const handleSubmit = async (values: LoginCredentials, actions: FormikHelpers<LoginCredentials>) => {
+        const token = await loginUser(values);
         actions.setSubmitting(false);
 
         if (token) {
-
-            setSuccessMessage("Inicio de sesión exitoso!");
+            setSuccessMessage("Connexion réussie !");
             setErrorMessage(null);
             router.push('/dashboard');
         } else {
-            setErrorMessage("Fallo en el inicio de sesión. Por favor, inténtelo de nuevo.");
+            setErrorMessage("Échec de la connexion. Veuillez réessayer.");
             setSuccessMessage(null);
         }
     };
@@ -50,7 +58,7 @@ function Login() {
     return (
         <>
             <Box mb={8} textAlign="center" mt={20}>
-                <Heading size="2xl">Iniciar Sesión</Heading>
+                <Heading size="2xl">Se connecter</Heading>
             </Box>
             <Formik
                 initialValues={{ email: '', password: '' }}
@@ -59,33 +67,37 @@ function Login() {
             >
                 {(props) => (
                     <Form>
-                        <Box m={450} spacing={4} mt={6}>
+                        <Stack m={450} spacing={4} mt={6}>
                             <Field name='email'>
-                                {({ field, form }) => (
-                                    <FormControl isInvalid={form.errors.email && form.touched.email}>
+                                {({ field, form }: FieldProps) => (
+                                    <FormControl isInvalid={Boolean(form.errors.email) && Boolean(form.touched.email)}>
                                         <FormLabel fontWeight="bold">Email:</FormLabel>
                                         <Input {...field} type="email" placeholder="Email" />
-                                        <FormErrorMessage>{form.errors.email}</FormErrorMessage>
+                                        <FormErrorMessage>
+                                            {typeof form.errors.email === 'string' ? form.errors.email : ''}
+                                        </FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
 
                             <Field name='password'>
-                                {({ field, form }) => (
-                                    <FormControl isInvalid={form.errors.password && form.touched.password}>
-                                        <FormLabel mt={10} fontWeight="bold">Contraseña:</FormLabel>
-                                        <Input {...field} type="password" placeholder="Contraseña" />
-                                        <FormErrorMessage>{form.errors.password}</FormErrorMessage>
+                                {({ field, form }: FieldProps) => (
+                                    <FormControl isInvalid={Boolean(form.errors.password) && Boolean(form.touched.password)}>
+                                        <FormLabel mt={10} fontWeight="bold">Mot de passe:</FormLabel>
+                                        <Input {...field} type="password" placeholder="Mot de passe" />
+                                        <FormErrorMessage>
+                                            {typeof form.errors.password === 'string' ? form.errors.password : ''}
+                                        </FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
 
                             <Center>
                                 <Button mt={10} colorScheme='teal' type="submit" isLoading={props.isSubmitting}>
-                                    Iniciar sesión
+                                    Se connecter
                                 </Button>
                             </Center>
-                        </Box>
+                        </Stack>
                         {errorMessage && <Text color="red.500" fontSize="xl" fontWeight="bold" textAlign="center">{errorMessage}</Text>}
                         {successMessage && <Text color="green.500" fontSize="xl" fontWeight="bold" textAlign="center">{successMessage}</Text>}
                     </Form>

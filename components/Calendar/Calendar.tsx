@@ -4,11 +4,25 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Box, Modal, ModalOverlay, Flex, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, Spacer, useToast} from '@chakra-ui/react';
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from '@chakra-ui/icons';
 
+
+interface Event {
+    id: number;
+    title: string;
+    start: Date;
+    end: Date;
+    color: string;
+    patientId: number;
+}
+
+interface Patient {
+    id: number;
+    name: string;
+}
 const CalendarComponent: React.FC = () => {
-    const [events, setEvents] = useState<any[]>([]);
-    const [patients, setPatients] = useState<any[]>([]);
+    const [events, setEvents] = useState<Event[]>([]);
+    const [patients, setPatients] = useState<Patient[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
@@ -26,27 +40,24 @@ const CalendarComponent: React.FC = () => {
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [selectedPatientName, setSelectedPatientName] = useState<string | null>(null);
 
-
-
-
     useEffect(() => {
         async function fetchEvents() {
             try {
-                console.log("Fetching events from API...");
+                console.log("Récupération des événements depuis l'API...");
                 const response = await fetch('/api/Calendar/Calendar');
-                console.log("Response received:", response);
+                console.log("Réponse reçue:", response);
 
                 if (!response.ok) {
-                    console.error("Response status:", response.status, "Response status text:", response.statusText);
+                    console.error("Statut de la réponse:", response.status, "Texte du statut de la réponse:", response.statusText);
                     try {
                         const errorData = await response.json();
-                        throw new Error(errorData.message || 'Error al obtener los eventos');
+                        throw new Error(errorData.message || 'Erreur lors de la récupération des événements');
                     } catch (jsonError) {
-                        throw new Error('Error al obtener los eventos y al leer el error devuelto');
+                        throw new Error('Erreur lors de la récupération des événements et en lisant lerreur retournée');
                     }
                 }
                 const data = await response.json();
-                console.log("Data from API:", data);
+                console.log("Données de l'API:", data);
                 const transformedEvents = data.map((event: any) => ({
                     id: event.id,
                     title: event.Subject,
@@ -57,7 +68,7 @@ const CalendarComponent: React.FC = () => {
                 }));
                 setEvents(transformedEvents);
             } catch (error) {
-                console.error("Error fetching events:", error);
+                console.error("Erreur lors de la récupération des événements: ", error);
             }
         }
 
@@ -67,13 +78,13 @@ const CalendarComponent: React.FC = () => {
                 const response = await fetch('/api/Patients/Patients');
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Error al obtener los pacientes');
+                    throw new Error(errorData.message || 'Erreur lors de la récupération des patients');
                 }
                 const data = await response.json();
-                console.log("Data from Pacientes API:", data); // Agrega este log
+                console.log("Données de l'API Patients: ", data);
                 setPatients(data);
             } catch (error) {
-                console.error("Error fetching patients:", error);
+                console.error("Erreur lors de la récupération des patients: ", error);
             }
         }
 
@@ -117,8 +128,8 @@ const CalendarComponent: React.FC = () => {
                 setSelectedPatientName(data.patientName);
             })
             .catch(error => {
-                console.error("Error al obtener el nombre del paciente:", error);
-                setSelectedPatientName("Desconocido");  // O manejar el error de una forma más elegante
+                console.error("Erreur lors de la récupération du nom du patient :", error);
+                setSelectedPatientName("Inconnu");
             });
     };
 
@@ -153,9 +164,9 @@ const CalendarComponent: React.FC = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error("Error al enviar el evento:", (errorData as any).message);
+                console.error("Erreur lors de l'envoi de l'événement: ", (errorData as any).message);
                 toast({
-                    title: "Error al crear evento.",
+                    title: "Erreur lors de la création de l'événement.",
                     description: errorData.message,
                     status: "error",
                     duration: 5000,
@@ -176,18 +187,18 @@ const CalendarComponent: React.FC = () => {
 
                 setIsOpen(false);
                 toast({
-                    title: "Evento creado.",
-                    description: "El evento ha sido creado con éxito.",
+                    title: "Événement créé.",
+                    description: "L'événement a été créé avec succès.",
                     status: "success",
                     duration: 5000,
                     isClosable: true,
                 });
             }
         } catch (error) {
-            console.error("Error al enviar el evento:", error);
+            console.error("Erreur lors de l'envoi de l'événement:", error);
             toast({
-                title: "Error al crear evento.",
-                description: (error as Error)?.message || "Error desconocido",
+                title: "Erreur lors de la création de l'événement.",
+                description: (error as Error)?.message || "Erreur inconnue",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
@@ -213,15 +224,15 @@ const CalendarComponent: React.FC = () => {
                     setIsEventModalOpen(false);
 
                     toast({
-                        title: "Evento eliminado.",
-                        description: "El evento ha sido eliminado con éxito.",
+                        title: "Événement supprimé.",
+                        description: "L'événement a été supprimé avec succès.",
                         status: "success",
                         duration: 5000,
                         isClosable: true,
                     });
                 } else {
                     const errorData = await response.json();
-                    throw new Error(errorData.error || 'Error al eliminar el evento');
+                    throw new Error(errorData.error || "Erreur lors de la suppression de l'événement");
                 }
             } catch (error) {
                 toast({
@@ -250,7 +261,7 @@ const CalendarComponent: React.FC = () => {
                 <FullCalendar
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                     initialView="dayGridMonth"
-                    locale="es"
+                    locale="fr"
                     slotDuration="00:05:00"
                     slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                     headerToolbar={{
@@ -260,22 +271,25 @@ const CalendarComponent: React.FC = () => {
                     }}
                     dateClick={handleDateClick}
                     eventClick={handleEventClick}
-                    events={events}
+                    events={events.map(event => ({
+                        ...event,
+                        id: event.id.toString()
+                    }))}
                     key={events.length}
                 />
             </Box>
             <Modal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Detalles del Evento</ModalHeader>
+                    <ModalHeader>Détails de l'événement</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <FormControl >
-                            <FormLabel>Asunto</FormLabel>
+                            <FormLabel>Sujet</FormLabel>
                             <Input value={selectedEvent?.title} isReadOnly />
                         </FormControl>
                         <FormControl mt={4}>
-                            <FormLabel>Inicio</FormLabel>
+                            <FormLabel>Debut</FormLabel>
                             <Input value={selectedEvent?.start?.toLocaleString()} isReadOnly />
                         </FormControl>
                         <FormControl mt={4}>
@@ -285,17 +299,17 @@ const CalendarComponent: React.FC = () => {
 
 
                         <FormControl mt={4}>
-                            <FormLabel>Paciente</FormLabel>
-                            <Input value={selectedPatientName || "Desconocido"} isReadOnly />
+                            <FormLabel>Patient</FormLabel>
+                            <Input value={selectedPatientName || "Inconnu"} isReadOnly />
                         </FormControl>
 
 
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme="blue" mr={3}>Editar</Button>
-                        <Button onClick={handleDelete} colorScheme="red" leftIcon={<DeleteIcon />} mr={3}>Eliminar</Button>
+                        <Button colorScheme="blue" mr={3}>Editer</Button>
+                        <Button onClick={handleDelete} colorScheme="red" leftIcon={<DeleteIcon />} mr={3}>Effacer</Button>
                         <Spacer />
-                        <Button onClick={() => setIsEventModalOpen(false)}>Cerrar</Button>
+                        <Button onClick={() => setIsEventModalOpen(false)}>Fermer</Button>
                     </ModalFooter>
 
                 </ModalContent>
@@ -304,15 +318,15 @@ const CalendarComponent: React.FC = () => {
             <Modal isOpen={isOpen} onClose={handleClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Agregar nuevo evento</ModalHeader>
+                    <ModalHeader>Ajouter un nouvel événement</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <FormControl isRequired>
-                            <FormLabel>Asunto</FormLabel>
+                            <FormLabel>Sujet</FormLabel>
                             <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
                         </FormControl>
                         <FormControl mt={4}>
-                            <FormLabel>Inicio</FormLabel>
+                            <FormLabel>Debut</FormLabel>
                             <Flex>
                                 <Select value={startHour} onChange={(e) => setStartHour(e.target.value)} mr={4}>
                                     {hours.map(hour => <option key={hour} value={hour}>{hour}</option>)}
@@ -337,7 +351,7 @@ const CalendarComponent: React.FC = () => {
                         <FormControl mt={4}>
                             <FormLabel>Paciente</FormLabel>
                             <Select onChange={(e) => setSelectedPatientId(Number(e.target.value))}>
-                                <option value="">Sin paciente</option>
+                                <option value="">Sans patient</option>
                                 {patients.map((patient) => (
                                     <option key={patient.id} value={patient.id}>{patient.name}</option>
                                 ))}
@@ -345,21 +359,21 @@ const CalendarComponent: React.FC = () => {
 
                         </FormControl>
                         <FormControl mt={4}>
-                            <FormLabel>Color del evento</FormLabel>
+                            <FormLabel>Couleur de l'événement</FormLabel>
                             <Select
                                 placeholder="Seleccione color"
                                 value={eventColor}
                                 onChange={(e) => setEventColor(e.target.value)}
                             >
-                                <option value="blue">Azul</option>
-                                <option value="red">Rojo</option>
-                                <option value="green">Verde</option>
-                                <option value="#DAA520">Amarillo</option>
+                                <option value="blue">Blue</option>
+                                <option value="red">Rouge</option>
+                                <option value="green">Vert</option>
+                                <option value="#DAA520">Jaune</option>
                             </Select>
                         </FormControl>
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={handleSubmit} colorScheme="blue">Guardar</Button>
+                        <Button onClick={handleSubmit} colorScheme="blue">Sauvegarder</Button>
                     </ModalFooter>
 
                 </ModalContent>

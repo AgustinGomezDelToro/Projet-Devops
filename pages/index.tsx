@@ -11,7 +11,7 @@ export default function Home() {
 
             <main className={styles.main}>
                 <h3 className={styles.title}>
-                    Bienvenido a Odonto Activa!
+                    Bienvenu à votre espace clinique !
                 </h3>
 
                 <Flex minWidth='max-content' alignItems='center' gap='2'>

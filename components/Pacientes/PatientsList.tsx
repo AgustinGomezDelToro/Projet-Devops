@@ -34,7 +34,7 @@ const PatientsList: React.FC = () => {
                 const usersResponse = await fetch('/api/users/users');
 
                 if (!patientsResponse.ok || !usersResponse.ok) {
-                    throw new Error('Error al obtener los datos');
+                    throw new Error('Erreur lors de la récupération des données.');
                 }
 
                 const patientsData = await patientsResponse.json();
@@ -76,42 +76,43 @@ const PatientsList: React.FC = () => {
 
     return (
         <Flex direction="column" align="center" mt={2}>
-            <Heading mb={2}>Lista de Pacientes</Heading>
+            <Heading mb={2}>Liste des patients.</Heading>
             <Box w={['90%', '85%', '95%']} p={8} bg={bg} rounded="xl" boxShadow="lg" mt={2}>
                 <Stack spacing={2} mb={2}>
                     <Flex align="center">
                         <Input
                             size="md"
-                            placeholder="Buscar paciente por nombre..."
+                            placeholder="Rechercher un patient par nom..."
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
                                 setCurrentPage(1);  // Reset the page number when search term changes
                             }}
                         />
                         <Button
-                            ml={2}  // Margen a la izquierda para separar el botón del input
+                            ml={2}
                             color="white"
                             colorScheme="teal"
                             leftIcon={<AddIcon />}  // Icono de '+'
                             onClick={() => {
-                                // Agrega aquí la lógica para crear un nuevo paciente
+
                             }}
                         >
-                            Paciente
+                            Patient
                         </Button>
                     </Flex>
                 </Stack>
 
 
                 <Table fontSize='14px' variant="simple" mt={6} borderX="2px solid lightgray" borderTop="2px solid lightgray" borderBottom="2px solid lightgray">
-                <Thead mt={5}>
+                    <Thead mt={5}>
                         <Tr border="2px solid gray">
-                            <Th >Nombre</Th>
+                            <Th >Nom</Th>
                             <Th textAlign="center">Email</Th>
-                            <Th textAlign="center">Teléfono</Th>
-                            <Th textAlign="center">Historia Clínica</Th>
-                            <Th textAlign="center">Paciente de</Th>
-                            <Th textAlign="center">Acciones</Th>
+                            <Th textAlign="center">Téléphone</Th>
+                            <Th textAlign="center">Dossier Médical</Th>
+                            <Th textAlign="center">Patient de</Th>
+                            <Th textAlign="center">Actions</Th>
+
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -143,7 +144,7 @@ const PatientsList: React.FC = () => {
                         onClick={handlePreviousPage}
                         disabled={currentPage === 1}
                     >
-                        Anterior
+                        Précédent
                     </Button>
                     <Spacer />
                     <Button
@@ -151,7 +152,7 @@ const PatientsList: React.FC = () => {
                         onClick={handleNextPage}
                         disabled={currentPage * itemsPerPage >= filteredPatients.length}
                     >
-                        Siguiente
+                        Suivant
                     </Button>
                 </Flex>
             </Box>

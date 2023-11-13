@@ -1,31 +1,32 @@
-import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Box, Button, FormControl, FormLabel, FormErrorMessage, Select, Input, Center, Text } from '@chakra-ui/react';
-import { Formik, Field, Form } from 'formik';
+import { Box, Button, FormControl, FormLabel, FormErrorMessage, Select, Input, Center, Text, Stack } from '@chakra-ui/react';
+import { Formik, Field, Form, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import Header from "../Header";
-import { loginUser } from '../auth/login.tsx';
 
+interface RegisterValues {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+}
 
 function SignIn() {
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [successMessage, setSuccessMessage] = useState<string>("");
     const router = useRouter();
 
     const validationSchema = Yup.object({
-        name: Yup.string().required('El nombre es requerido'),
+        name: Yup.string().required('Le nom est requis'),
         email: Yup.string()
-            .email('El email no es válido')
-            .required('El email es requerido'),
-        password: Yup.string().required('La contraseña es requerida').test('is-strong', 'La contraseña es demasiado débil', value => value !== 'azerty' && value !== 'qwerty'
-            ),
-        role: Yup.string().required('El rol es requerido')
+            .email("L'email n'est pas valide")
+            .required("L'email est requis"),
+        password: Yup.string().required('Le mot de passe est requis').test('is-strong', 'Le mot de passe est trop faible', value => value !== 'azerty' && value !== 'qwerty'),
+        role: Yup.string().required('Le rôle est requis')
     });
 
-
-
-    const handleRegister = async (values, actions) => {
+    const handleRegister = async (values: RegisterValues) => {
         const response = await fetch("/api/register", {
             method: "POST",
             headers: {
@@ -37,89 +38,86 @@ function SignIn() {
         if (!response.ok) {
             const errorData = await response.json();
             setErrorMessage(errorData.error);
-            actions.setSubmitting(false);
             return;
         }
 
         setErrorMessage("");
-        setSuccessMessage("Usuario registrado con éxito.");
+        setSuccessMessage("Utilisateur enregistré avec succès.");
 
-        router.push("/dashboard");
+        await router.push("/dashboard");
     };
-
-
 
     return (
         <>
             <Header />
-        <Box width={["100%", "80%", "60%", "40%"]} mx="auto" mt={10}>
-            <Center m={4} spacing={4} mt={6}>
-                <h1>Registre un usuario</h1>
-            </Center>
+            <Box width={["100%", "80%", "60%", "40%"]} mx="auto" mt={10}>
+                <Center mt={6}>
+                    <h1>Enregistrer un utilisateur</h1>
+                </Center>
 
-            <Formik initialValues={{ name: '', email: '', password: '', role: '' }} validationSchema={validationSchema} onSubmit={handleRegister}>
-                {props => (
-                    <Form>
-                        <Box m={4} spacing={4} mt={6}>
-                            <Field name='name'>
-                                {({ field, form }) => (
-                                    <FormControl isInvalid={form.errors.name && form.touched.name}>
-                                        <FormLabel>Nombre y apellido:</FormLabel>
-                                        <Input {...field} type="text" placeholder="Nombre y apellido" />
-                                        <FormErrorMessage>{form.errors.name}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
+                <Formik initialValues={{ name: '', email: '', password: '', role: '' }} validationSchema={validationSchema} onSubmit={handleRegister}>
+                    {props => (
+                        <Form>
+                            <Stack m={4} mt={6} spacing={4}>
+                                <Field name='name'>
+                                    {({ field, form }: FieldProps) => (
+                                        <FormControl isInvalid={Boolean(form.errors.name) && Boolean(form.touched.name)}>
+                                            <FormLabel>Nom et prénom :</FormLabel>
+                                            <Input {...field} type="text" placeholder="Nom et prénom" />
+                                            <FormErrorMessage>{typeof form.errors.name === 'string' ? form.errors.name : ''}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
 
-                            <Field name='email'>
-                                {({ field, form }) => (
-                                    <FormControl isInvalid={form.errors.email && form.touched.email}>
-                                        <FormLabel>Email:</FormLabel>
-                                        <Input {...field} type="email" placeholder="Email" />
-                                        <FormErrorMessage>{form.errors.email}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
+                                <Field name='email'>
+                                    {({ field, form }: FieldProps) => (
+                                        <FormControl isInvalid={Boolean(form.errors.email) && Boolean(form.touched.email)}>
+                                            <FormLabel>Email :</FormLabel>
+                                            <Input {...field} type="email" placeholder="Email" />
+                                            <FormErrorMessage>{typeof form.errors.email === 'string' ? form.errors.email : ''}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
 
-                            <Field name='password'>
-                                {({ field, form }) => (
-                                    <FormControl isInvalid={form.errors.password && form.touched.password}>
-                                        <FormLabel>Contraseña:</FormLabel>
-                                        <Input {...field} type="password" placeholder="Contraseña" />
-                                        <FormErrorMessage>{form.errors.password}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
+                                <Field name='password'>
+                                    {({ field, form }: FieldProps) => (
+                                        <FormControl isInvalid={Boolean(form.errors.password) && Boolean(form.touched.password)}>
+                                            <FormLabel>Mot de passe :</FormLabel>
+                                            <Input {...field} type="password" placeholder="Mot de passe" />
+                                            <FormErrorMessage>{typeof form.errors.password === 'string' ? form.errors.password : ''}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
 
-                            <Field name='role'>
-                                {({ field, form }) => (
-                                    <FormControl isInvalid={form.errors.role && form.touched.role}>
-                                        <FormLabel>Role:</FormLabel>
-                                        <Select {...field}>
-                                            <option value="" label="Selecciona status" />
-                                            <option value="ADMINISTRADOR" label="Administrador" />
-                                            <option value="ODONTOLOGO" label="Odontólogo" />
-                                            <option value="PACIENTE" label="Paciente" />
-                                        </Select>
-                                        <FormErrorMessage>{form.errors.role}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
+                                <Field name='role'>
+                                    {({ field, form }: FieldProps) => (
+                                        <FormControl isInvalid={Boolean(form.errors.role) && Boolean(form.touched.role)}>
+                                            <FormLabel>Rôle :</FormLabel>
+                                            <Select {...field}>
+                                                <option value="" label="Sélectionner un statut" />
+                                                <option value="ADMINISTRADOR" label="Administrateur" />
+                                                <option value="ODONTOLOGO" label="Dentiste" />
+                                                <option value="PACIENTE" label="Patient" />
+                                            </Select>
+                                            <FormErrorMessage>{typeof form.errors.role === 'string' ? form.errors.role : ''}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
 
-                            <Center>
-                                <Button mt={4} colorScheme='teal' type="submit" isLoading={props.isSubmitting}>
-                                    Registrar usuario
-                                </Button>
-                            </Center>
-                        </Box>
+                                <Center>
+                                    <Button mt={4} colorScheme='teal' type="submit" isLoading={props.isSubmitting}>
+                                        Enregistrer l'utilisateur
+                                    </Button>
+                                </Center>
+                            </Stack>
 
-                        {errorMessage && <Text color="red.500" fontSize="xl" fontWeight="bold" textAlign="center">{errorMessage}</Text>}
-                        {successMessage && <Text color="green.500" fontSize="xl" fontWeight="bold" textAlign="center">{successMessage}</Text>}
-                    </Form>
-                )}
-            </Formik>
-        </Box>
-            </>
+                            {errorMessage && <Text color="red.500" fontSize="xl" fontWeight="bold" textAlign="center">{errorMessage}</Text>}
+                            {successMessage && <Text color="green.500" fontSize="xl" fontWeight="bold" textAlign="center">{successMessage}</Text>}
+                        </Form>
+                    )}
+                </Formik>
+            </Box>
+        </>
     );
 }
 

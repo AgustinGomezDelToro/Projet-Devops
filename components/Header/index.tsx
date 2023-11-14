@@ -3,19 +3,20 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+// Definición de la interfaz para el usuario
 interface Utilisateur {
     name: string;
 }
 
-function Header() {
+const Header: React.FC = () => {
     const router = useRouter();
-    const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);  // Cambio aquí
+    const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
 
     useEffect(() => {
         const getProfile = async () => {
             try {
                 const response = await axios.get('/api/profile/profile');
-                setUtilisateur(response.data);  // Cambio aquí
+                setUtilisateur(response.data);
             } catch (error) {
                 console.error("Erreur lors de la récupération du profil:", error);
             }
@@ -36,13 +37,13 @@ function Header() {
     return (
         <Flex width="100%" p={4} borderBottom="0px solid gray" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" justifyContent="center">
-                <p>Bonjour {utilisateur?.name} !</p> {/* Cambio aquí */}
+                <p>Bonjour {utilisateur?.name} !</p>
             </Box>
             <Flex alignItems="center">
-                { router.pathname !== "/dashboard" &&
+                {router.pathname !== "/dashboard" &&
                     <Button mr={2} onClick={() => router.push('/dashboard')}>Accueil</Button>
                 }
-                { router.pathname === "/dashboard" &&
+                {router.pathname === "/dashboard" &&
                     <Button mr={2} onClick={() => router.push('/profile')}>Profil</Button>
                 }
                 <Button colorScheme="red" onClick={handleLogout}>Déconnexion</Button>

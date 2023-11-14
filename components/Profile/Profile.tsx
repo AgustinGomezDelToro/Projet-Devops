@@ -1,8 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+
+interface UserData {
+    name: string;
+    email: string;
+    role: string;
+}
+
 function Profile() {
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState<UserData | null>(null);
 
     useEffect(() => {
         getProfile();
@@ -14,7 +21,7 @@ function Profile() {
             console.log(response.data);
             setUserData(response.data);
         } catch (error) {
-            console.error("Error obteniendo el perfil:", error);
+            console.error("Erreur lors de l'obtention du profil :", error); // Mensaje de error en francés
         }
     };
 

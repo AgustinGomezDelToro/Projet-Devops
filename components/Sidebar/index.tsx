@@ -1,15 +1,20 @@
+import React from 'react';
 import {Box, Button, Drawer, useBreakpointValue, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure} from "@chakra-ui/react";
 import Link from 'next/link';
 
+// Definición de la interfaz para las props
+interface SidebarProps {
+    setActiveView: (view: string) => void;
+}
 
-function Sidebar({ setActiveView }) {
+const Sidebar: React.FC<SidebarProps> = ({ setActiveView }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const displayMenuButton = useBreakpointValue({ base: "block", md: "none" });
 
     return (
         <Box width={["100%", null, "20%"]} minHeight="100vh" borderRight="0px solid gray" p={4} position="relative" bg="white" boxShadow="lg"  >
             <Button onClick={onOpen} display={displayMenuButton} colorScheme="teal" mb={4} position="absolute" top="1rem" right="1rem">
-                Menú
+                Menu
             </Button>
 
             {/* Drawer (Menú deslizable) */}
@@ -17,19 +22,19 @@ function Sidebar({ setActiveView }) {
                 <DrawerOverlay>
                     <DrawerContent>
                         <DrawerCloseButton />
-                        <DrawerHeader borderBottomWidth="1px">Navegación</DrawerHeader>
+                        <DrawerHeader borderBottomWidth="1px">Navigation</DrawerHeader>
                         <DrawerBody>
                             <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('home')}>
-                                Home
+                                Accueil
                             </Button>
                             <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('agendas')}>
                                 Agendas
                             </Button>
                             <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('Pacientes')}>
-                                Pacientes
+                                Patients
                             </Button>
                             <Button mb={4} width="100%" colorScheme="teal" onClick={() => setActiveView('odontograma')}>
-                                Odontograma
+                                Odontogramme
                             </Button>
                         </DrawerBody>
                         <DrawerFooter borderTopWidth="1px">
@@ -43,7 +48,7 @@ function Sidebar({ setActiveView }) {
             <Box display={displayMenuButton === "none" ? "block" : "none"}>
                 <Link href="/home">
                     <Button mb={4} width="100%" colorScheme="teal">
-                        Home
+                        Accueil
                     </Button>
                 </Link>
                 <Link href="/agenda">
@@ -53,7 +58,7 @@ function Sidebar({ setActiveView }) {
                 </Link>
                 <Link href="/pacientes">
                     <Button mb={4} width="100%" colorScheme="teal">
-                        Pacientes
+                        Patients
                     </Button>
                 </Link>
             </Box>

@@ -6,7 +6,6 @@ const Agenda: React.FC = () => {
     return (
         <DashboardLayout>
         <div>
-            <h1>Mi Calendario</h1>
             <CalendarComponent />
         </div>
         </DashboardLayout>

@@ -1,7 +1,6 @@
 import React from 'react';
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
 import PatientsList from "../components/Pacientes/PatientsList";
-import Home from "../components/Pacientes/PacientesProfile";
 
 const Calendar: React.FC = () => {
     return (

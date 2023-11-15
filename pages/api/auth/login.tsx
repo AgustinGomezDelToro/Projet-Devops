@@ -45,6 +45,7 @@ export default async function loginHandler(req, res) {
         res.setHeader('Set-Cookie', serializedCookie);
         return res.json({ message: "Inicio de sesión exitoso!", token: token });
 
+
     } catch (error) {
         return res.status(500).json({ message: "Error interno del servidor", error: process.env.NODE_ENV === 'development' ? error.message : undefined });
     }

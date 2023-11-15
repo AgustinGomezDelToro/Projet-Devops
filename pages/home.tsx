@@ -1,12 +1,11 @@
 import React from 'react';
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
-import Home from "../components/Home/Home";
 
 const Calendar: React.FC = () => {
     return (
         <DashboardLayout>
             <div>
-                <h1>Mi home</h1>
+                <h1>My home</h1>
             </div>
         </DashboardLayout>
     );

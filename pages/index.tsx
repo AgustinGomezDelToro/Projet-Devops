@@ -20,7 +20,7 @@ export default function Home() {
                     <ButtonGroup gap='2'>
                         <Button
                             colorScheme='teal'
-                            onClick={() => router.push('/login')}  // Usar la función push para redirigir
+                            onClick={() => router.push('/login')}
                         >
                             Log in
                         </Button>

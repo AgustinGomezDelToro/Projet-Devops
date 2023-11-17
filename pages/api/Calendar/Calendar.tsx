@@ -19,9 +19,11 @@ export default async function calendarHandler(req: NextApiRequest, res: NextApiR
             try {
                 const events = await prisma.event.findMany();
                 res.status(200).json(events);
-            } catch (e: any) {
-                console.error("Error al obtener eventos:", e);
-                res.status(500).json({ error: "No se pudieron obtener los eventos", details: e.message });
+            } catch (e) {
+                if (e instanceof Error) {
+                    console.error("Erreur lors de la récupération des événements:", e);
+                    res.status(500).json({ error: "Impossible de récupérer les événements", details: e.message });
+                }
             }
             break;
 
@@ -29,7 +31,7 @@ export default async function calendarHandler(req: NextApiRequest, res: NextApiR
             const { Subject, StartTime, EndTime, PatientId, Color } = req.body;
 
             try {
-                console.log("New Event Data:", req.body);
+                console.log("Nouvelles données d'événement:", req.body);
 
                 const eventData: EventData = {
                     Subject,
@@ -44,31 +46,35 @@ export default async function calendarHandler(req: NextApiRequest, res: NextApiR
                 });
 
                 res.status(201).json(event);
-            } catch (e: any) {
-                console.error("Error al crear el evento:", e);
-                res.status(500).json({ error: "No se pudo crear el evento", details: e.message });
+            } catch (e) {
+                if (e instanceof Error) {
+                    console.error("Erreur lors de la création de l'événement:", e);
+                    res.status(500).json({ error: "Impossible de créer l'événement", details: e.message });
+                }
             }
             break;
 
         case 'DELETE':
             const eventId = Number(req.query.eventId);
             if (isNaN(eventId)) {
-                res.status(400).json({ error: "ID de evento inválido" });
+                res.status(400).json({ error: "ID de l'événement invalide" });
                 return;
             }
             try {
                 await prisma.event.delete({
                     where: { id: eventId },
                 });
-                res.status(200).json({ message: "Evento eliminado con éxito" });
-            } catch (e: any) {
-                console.error("Error al eliminar el evento:", e);
-                res.status(500).json({ error: "No se pudo eliminar el evento", details: e.message });
+                res.status(200).json({ message: "Événement supprimé avec succès" });
+            } catch (e) {
+                if (e instanceof Error) {
+                    console.error("Erreur lors de la suppression de l'événement:", e);
+                    res.status(500).json({ error: "Impossible de supprimer l'événement", details: e.message });
+                }
             }
             break;
 
         default:
             res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
-            res.status(405).end(`Method ${method} Not Allowed`);
+            res.status(405).end(`Méthode ${method} non autorisée`);
     }
 }

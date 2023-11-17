@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) =>  {
     if (req.method !== 'POST') {
-        return res.status(405).end();
+        return res.status(405).end(); // Méthode non autorisée
     }
 
     const API_URL = process.env.NODE_ENV === 'production'
@@ -29,13 +29,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>  {
 
     } catch (error) {
         if (error instanceof Error) {
-            console.error("Error al crear el evento en el calendario:", error.message);
-            return res.status(500).json({ error: 'Error al crear el evento en el calendario', details: error.message });
+            console.error("Erreur lors de la création de l'événement dans le calendrier :", error.message);
+            return res.status(500).json({ error: "Erreur lors de la création de l'événement dans le calendrier", details: error.message });
         } else {
-            // puedes manejar otros tipos de errores o rechazarlos aquí
-            console.error("Ocurrió un error desconocido");
-            return res.status(500).json({ error: 'Ocurrió un error desconocido' });
+            // Manejo de otros tipos de errores o rechazarlos aquí
+            console.error("Une erreur inconnue s'est produite");
+            return res.status(500).json({ error: "Une erreur inconnue s'est produite" });
         }
     }
 };
-

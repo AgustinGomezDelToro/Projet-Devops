@@ -14,13 +14,13 @@ export default function Home() {
                     Bienvenu à votre espace clinique !
                 </h3>
 
-                <Flex minWidth='max-content' alignItems='center' gap='2'>
-                    <Box p='2'></Box>
+                <Flex minWidth="max-content" alignItems="center" gap="2">
+                    <Box p="2"></Box>
                     <Spacer />
-                    <ButtonGroup gap='2'>
+                    <ButtonGroup gap="2">
                         <Button
-                            colorScheme='teal'
-                            onClick={() => router.push('/login')}
+                            colorScheme="teal"
+                            onClick={() => router.push("/login")}
                         >
                             Log in
                         </Button>

@@ -44,16 +44,16 @@ const CalendarComponent: React.FC = () => {
         async function fetchEvents() {
             try {
                 console.log("Récupération des événements depuis l'API...");
-                const response = await fetch('/api/Calendar/Calendar');
+                const response = await fetch("/api/Calendar/Calendar");
                 console.log("Réponse reçue:", response);
 
                 if (!response.ok) {
                     console.error("Statut de la réponse:", response.status, "Texte du statut de la réponse:", response.statusText);
                     try {
                         const errorData = await response.json();
-                        throw new Error(errorData.message || 'Erreur lors de la récupération des événements');
+                        throw new Error(errorData.message || "Erreur lors de la récupération des événements");
                     } catch (jsonError) {
-                        throw new Error('Erreur lors de la récupération des événements et en lisant lerreur retournée');
+                        throw new Error("Erreur lors de la récupération des événements et en lisant lerreur retournée");
                     }
                 }
                 const data = await response.json();
@@ -75,10 +75,10 @@ const CalendarComponent: React.FC = () => {
 
         async function fetchPatients() {
             try {
-                const response = await fetch('/api/Patients/Patients');
+                const response = await fetch("/api/Patients/Patients");
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Erreur lors de la récupération des patients');
+                    throw new Error(errorData.message || "Erreur lors de la récupération des patients");
                 }
                 const data = await response.json();
                 console.log("Données de l'API Patients: ", data);
@@ -122,7 +122,7 @@ const CalendarComponent: React.FC = () => {
 
         const eventId = info.event.id;
 
-        fetch(`/api/Calendar/getPatientName?eventId=${eventId}`)
+        fetch("/api/Calendar/getPatientName?eventId=${eventId}")
             .then(response => response.json())
             .then(data => {
                 setSelectedPatientName(data.patientName);
@@ -154,10 +154,10 @@ const CalendarComponent: React.FC = () => {
         };
 
         try {
-            const response = await fetch('/api/Calendar/createCalendarEvent', {
-                method: 'POST',
+            const response = await fetch("/api/Calendar/createCalendarEvent", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(eventData),
             });
@@ -209,10 +209,10 @@ const CalendarComponent: React.FC = () => {
     const handleDelete = async () => {
         if (selectedEventId) {
             try {
-                const response = await fetch(`/api/Calendar/Calendar?eventId=${selectedEventId}`, {
-                    method: 'DELETE',
+                const response = await fetch("/api/Calendar/Calendar?eventId=${selectedEventId}", {
+                    method: "DELETE",
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 });
 
@@ -263,11 +263,11 @@ const CalendarComponent: React.FC = () => {
                     initialView="dayGridMonth"
                     locale="fr"
                     slotDuration="00:05:00"
-                    slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+                    slotLabelFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
                     headerToolbar={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                        left: "prev,next today",
+                        center: "title",
+                        right: "dayGridMonth,timeGridWeek,timeGridDay",
                     }}
                     dateClick={handleDateClick}
                     eventClick={handleEventClick}
@@ -281,7 +281,7 @@ const CalendarComponent: React.FC = () => {
             <Modal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Détails de l'événement</ModalHeader>
+                    <ModalHeader>Détails de l&apos;événement</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <FormControl >
@@ -359,7 +359,7 @@ const CalendarComponent: React.FC = () => {
 
                         </FormControl>
                         <FormControl mt={4}>
-                            <FormLabel>Couleur de l'événement</FormLabel>
+                            <FormLabel>Couleur de l&apos;événement</FormLabel>
                             <Select
                                 placeholder="Seleccione color"
                                 value={eventColor}

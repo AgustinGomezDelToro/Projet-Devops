@@ -18,5 +18,5 @@ RUN npm run build
 # Exponer el puerto que usa tu aplicación (usualmente es el 3000 para Next.js)
 EXPOSE 3000
 
-# Comando para iniciar la aplicación
+# Comando para iniciar la apliclalllalalaación
 CMD ["npm", "start"]

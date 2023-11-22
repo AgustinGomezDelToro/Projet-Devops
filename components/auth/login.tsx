@@ -13,8 +13,9 @@ interface LoginCredentials {
 // Función para iniciar sesión
 export const loginUser = async (credentials: LoginCredentials): Promise<string | false> => {
     try {
-        const response = await axios.post('/api/auth/login', credentials);
-        if (response.data.message === "Connexion réussie !") { // Asegúrate de que este mensaje coincida con lo que tu backend envía
+        const response = await axios.post("/api/auth/login", credentials);
+        console.log("Respuesta de loginUser", response.data); // Depuración: Imprime la respuesta
+        if (response.data.message === "Connexion réussie !") {
             return response.data.token;
         } else {
             console.log(response.data);
@@ -32,8 +33,8 @@ export const loginUser = async (credentials: LoginCredentials): Promise<string |
 
 // Esquema de validación
 const validationSchema = Yup.object({
-    email: Yup.string().email('Email non valide').required('Champ requis'),
-    password: Yup.string().required('Champ requis'),
+    email: Yup.string().email("Email non valide").required("Champ requis"),
+    password: Yup.string().required("Champ requis"),
 });
 
 function Login() {
@@ -42,13 +43,15 @@ function Login() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const handleSubmit = async (values: LoginCredentials, actions: FormikHelpers<LoginCredentials>) => {
+        console.log("handleSubmit ejecutado", values); // Depuración: Confirma que handleSubmit se llama
         const token = await loginUser(values);
         actions.setSubmitting(false);
 
         if (token) {
+            console.log("Intentando redirigir a /dashboard"); // Depuración: Confirma intento de redirección
             setSuccessMessage("Connexion réussie !");
             setErrorMessage(null);
-            router.push('/dashboard');
+            router.push('/dashboard').catch(err => console.error("Error en redirección", err)); // Captura errores de redirección
         } else {
             setErrorMessage("Échec de la connexion. Veuillez réessayer.");
             setSuccessMessage(null);
@@ -93,7 +96,7 @@ function Login() {
                             </Field>
 
                             <Center>
-                                <Button mt={10} colorScheme='teal' type="submit" isLoading={props.isSubmitting}>
+                                <Button mt={10} colorScheme='teal' type="submit">
                                     Se connecter
                                 </Button>
                             </Center>

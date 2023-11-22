@@ -22,7 +22,7 @@ function SignIn() {
         email: Yup.string()
             .email("L'email n'est pas valide")
             .required("L'email est requis"),
-        password: Yup.string().required('Le mot de passe est requis').test('is-strong', 'Le mot de passe est trop faible', value => value !== 'azerty' && value !== 'qwerty'),
+            password: Yup.string().required('Le mot de passe est requis').test('is-strong', 'Le mot de passe est trop faible', value => value !== 'azerty' && value !== 'qwerty'),
         role: Yup.string().required('Le rôle est requis')
     });
 
@@ -106,7 +106,7 @@ function SignIn() {
 
                                 <Center>
                                     <Button mt={4} colorScheme='teal' type="submit" isLoading={props.isSubmitting}>
-                                        Enregistrer l'utilisateur
+                                        Enregistrer l&apos;utilisateur
                                     </Button>
                                 </Center>
                             </Stack>

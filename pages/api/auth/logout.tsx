@@ -13,8 +13,8 @@ export default async function logoutHandler(req: NextApiRequest, res: NextApiRes
             httpOnly: true,
             secure: process.env.NODE_ENV !== 'development',
             expires: new Date(0),
-            path: '/',
-            sameSite: 'strict',
+            path: "/",
+            sameSite: "strict",
         })
     );
 

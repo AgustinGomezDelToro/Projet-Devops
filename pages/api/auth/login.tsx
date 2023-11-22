@@ -47,10 +47,10 @@ export default async function loginHandler(req: NextApiRequest, res: NextApiResp
         // Sérialise le cookie :
         const serializedCookie = cookie.serialize('myTokenName', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV !== 'development',
+            secure: process.env.NODE_ENV !== "development",
             maxAge: 60 * 60 * 24,
-            path: '/',
-            sameSite: 'strict',
+            path: "/",
+            sameSite: "strict",
         });
 
         // Définit l'en-tête du cookie :

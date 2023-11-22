@@ -23,4 +23,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: agustingomezdeltoro/microservices-clinique-dentaire:latest
+          tags: gomezdeltoroagustin/microservices-clinique-dentaire:latest

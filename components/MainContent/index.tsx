@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 
 // Definición de la interfaz para las props
 interface MainContentProps {
-    activeView: 'home' | 'agendas' | 'Pacientes' | string; // Puedes restringir más los tipos si es necesario
+    activeView: 'home' | 'agendas' | 'Pacientes' | "Médecins" | string; // Puedes restringir más los tipos si es necesario
 }
 
 const MainContent: React.FC<MainContentProps> = ({ activeView }) => {
@@ -24,6 +24,13 @@ const MainContent: React.FC<MainContentProps> = ({ activeView }) => {
             return (
                 <Box flex="1" p={4}>
                     <p>Contenu des Patients</p> {/* Traducido al francés */}
+                </Box>
+            );
+
+        case 'Médecins':
+            return (
+                <Box flex="1" p={4}>
+                    <p>Contenu des Médecins</p> {/* Traducido al francés */}
                 </Box>
             );
         default:

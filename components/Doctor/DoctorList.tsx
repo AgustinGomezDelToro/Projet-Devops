@@ -2,35 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, ButtonGroup, Flex, Heading, IconButton, Input, Spacer, Stack, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon, ViewIcon, EditIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
 
-interface Patient {
+interface Doctorazerty {
     id: number;
     name: string;
     email: string;
     telephone: string;
-    clinicHistory: string;
-    doctorId: number;
-    doctorName: string;
+    eventsHistory: string;
+    createAt: string;
+    updateAt: string;
 }
 
-const PatientsList: React.FC = () => {
-    const [patients, setPatients] = useState<Patient[]>([]);
-    const [searchTerm, setSearchTerm] = useState<string>("");
+
+const DoctorList: React.FC = () => {
+    const [doctors, setDoctors] = useState<Doctorazerty[]>([]);    const [searchTerm, setSearchTerm] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 10;
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const patientsResponse = await fetch('/api/Patients/Patients');
+                const doctorsResponse = await fetch('/api/Doctor/Doctor');
+                console.log("Respuesta del servidor:", doctorsResponse);
 
-                if (!patientsResponse.ok) {
-                    throw new Error('Erreur lors de la récupération des données des patients.');
+                if (!doctorsResponse.ok) {
+                    throw new Error('Erreur lors de la récupération des données des médecins.');
                 }
 
-                const patientsData = await patientsResponse.json();
-                const sortedPatients = patientsData.sort((a: Patient, b: Patient) => a.name.localeCompare(b.name));
-
-                setPatients(sortedPatients);
+                const doctorsData = await doctorsResponse.json();
+                setDoctors(doctorsData); // Asegúrate de que 'doctorsData' tenga el formato de 'Doctorazerty[]'
+                console.log("Datos de los médicos:", doctorsData);
+                // Resto del código...
             } catch (error) {
                 console.error("Erreur lors de la récupération des données:", error);
             }
@@ -43,28 +44,28 @@ const PatientsList: React.FC = () => {
         return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
-    const filteredPatients = patients.filter(patient =>
-        normalizeString(patient.name).includes(normalizeString(searchTerm))
+    const filteredDoctors = doctors.filter(doctor =>
+        normalizeString(doctor.name).includes(normalizeString(searchTerm))
     );
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredPatients.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = filteredDoctors.slice(indexOfFirstItem, indexOfLastItem);
 
     const handlePreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
-    const handleNextPage = () => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredPatients.length / itemsPerPage)));
+    const handleNextPage = () => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredDoctors.length / itemsPerPage)));
 
     const bg = useColorModeValue('white', 'gray.800');
 
     return (
         <Flex direction="column" align="center" mt={2}>
-            <Heading mb={2}>Liste des Patients</Heading>
+            <Heading mb={2}>Liste des Médecins</Heading>
             <Box w={['90%', '85%', '95%']} p={8} bg={bg} rounded="xl" boxShadow="lg" mt={2}>
                 <Stack spacing={2} mb={2}>
                     <Flex align="center">
                         <Input
                             size="md"
-                            placeholder="Rechercher un patient par nom..."
+                            placeholder="Rechercher un médecin par nom..."
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
                                 setCurrentPage(1);
@@ -76,7 +77,7 @@ const PatientsList: React.FC = () => {
                             leftIcon={<AddIcon />}
                             onClick={() => {}}
                         >
-                            Ajouter un Patient
+                            Ajouter un Médecin
                         </Button>
                     </Flex>
                 </Stack>
@@ -87,21 +88,21 @@ const PatientsList: React.FC = () => {
                             <Th>Nom</Th>
                             <Th textAlign="center">Email</Th>
                             <Th textAlign="center">Téléphone</Th>
-                            <Th textAlign="center">Dossier Médical</Th>
-                            <Th textAlign="center">Docteur</Th>
+                            <Th textAlign="center">Historique des Événements</Th>
+                            <Th textAlign="center">Patients</Th>
                             <Th textAlign="center">Actions</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {currentItems.map(patient => (
-                            <Tr key={patient.id} height="5px" mt={2}>
-                                <Td>{patient.name}</Td>
-                                <Td textAlign="center">{patient.email}</Td>
-                                <Td textAlign="center">{patient.telephone}</Td>
+                        {currentItems.map(doctor => (
+                            <Tr key={doctor.id}>
+                                <Td>{doctor.name}</Td>
+                                <Td textAlign="center">{doctor.email}</Td>
+                                <Td textAlign="center">{doctor.telephone}</Td>
                                 <Td textAlign="center" isTruncated maxWidth="150px">
-                                    {patient.clinicHistory}
+                                    {doctor.eventsHistory}
                                 </Td>
-                                <Td textAlign="center">{patient.doctorName || "Inconnu"}</Td>
+                                <Td textAlign="center">{"Inconnu"}</Td>
                                 <Td textAlign="center">
                                     <ButtonGroup isAttached variant="outline" spacing={4} size="md">
                                         <IconButton icon={<ViewIcon />} aria-label="Voir" />
@@ -126,7 +127,7 @@ const PatientsList: React.FC = () => {
                     <Button
                         rightIcon={<ChevronRightIcon />}
                         onClick={handleNextPage}
-                        disabled={currentPage * itemsPerPage >= filteredPatients.length}
+                        disabled={currentPage * itemsPerPage >= filteredDoctors.length}
                     >
                         Suivant
                     </Button>
@@ -136,4 +137,4 @@ const PatientsList: React.FC = () => {
     );
 };
 
-export default PatientsList;
+export default DoctorList;

@@ -14,7 +14,7 @@ export default function Home() {
                     Bienvenu à votre espace clinique !
                 </h3>
 
-                <Flex minWidth="max-content" alignItems="center" gap="2">
+                <Flex minWidth="max-content" alignItems="center" gap="2" mt={3}>
                     <Box p="2"></Box>
                     <Spacer />
                     <ButtonGroup gap="2">

@@ -1,57 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model user {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      String
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
-  events    event[]  // Una relación uno a muchos con el modelo 'event'
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  password String
+  role     String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  events   event[]
 }
 
 model event {
-  id          Int      @id @default(autoincrement())
-  Subject     String
-  StartTime   DateTime
-  EndTime     DateTime
-  PatientId   Int?
-  Color       String?  // Nuevo campo para el color
-  Patient     pacientes? @relation(fields: [PatientId], references: [id])
-  userId      Int?
-  user        user?     @relation(fields: [userId], references: [id])
+  id           Int          @id @default(autoincrement())
+  Subject      String
+  StartTime    DateTime
+  EndTime      DateTime
+  Color        String?
+  PatientId    Int?
+  userId       Int?
+  doctorId     Int
+  status       String
+  Patient      pacientes?   @relation(fields: [PatientId], references: [id])
+  doctorazerty doctorazerty @relation(fields: [doctorId], references: [id])
+  user         user?        @relation(fields: [userId], references: [id])
+
+  @@index([PatientId], map: "event_PatientId_fkey")
+  @@index([doctorId], map: "event_doctorId_fkey")
+  @@index([userId], map: "event_userId_fkey")
 }
 
-
 model pacientes {
-  id          Int      @id @default(autoincrement())
-  name        String
-  email       String   @unique
-  telephone   String
-  role        String
+  id            Int          @id @default(autoincrement())
+  name          String
+  email         String       @unique
+  role          String
   clinicHistory String
-  patienDe    String
-  createAt    DateTime @default(now())
-  updateAt    DateTime @updatedAt
-  events      event[]  // Relación uno a muchos con el modelo 'event'
+  createAt      DateTime     @default(now())
+  updateAt      DateTime     @updatedAt
+  telephone     String
+  doctorId      Int
+  events        event[]
+  doctorazerty  doctorazerty @relation(fields: [doctorId], references: [id])
+
+  @@index([doctorId], map: "pacientes_doctorId_fkey")
 }
 
 model odontograma {
-    id        Int      @id @default(autoincrement())
-    name      String
-    email     String   @unique
-    password  String
-    role      String
-    clinicHistory String
-    patienDe String
-    createAt  DateTime @default(now())
-    updateAt  DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password      String
+  role          String
+  clinicHistory String
+  patienDe      String
+  createAt      DateTime @default(now())
+  updateAt      DateTime @updatedAt
+}
+
+model doctorazerty {
+  id            Int         @id @default(autoincrement())
+  name          String
+  email         String      @unique
+  telephone     String
+  eventsHistory String
+  createAt      DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
+  events        event[]
+  patients      pacientes[]
 }

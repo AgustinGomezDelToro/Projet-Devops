@@ -61,6 +61,11 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveView }) => {
                         Patients
                     </Button>
                 </Link>
+                <Link href="/doctors">
+                    <Button mb={4} width="100%" colorScheme="teal">
+                        Médecins
+                    </Button>
+                </Link>
             </Box>
         </Box>
     );

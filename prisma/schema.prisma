@@ -70,6 +70,7 @@ model doctorazerty {
   name          String
   email         String      @unique
   telephone     String
+  speciality    String
   eventsHistory String
   createAt      DateTime    @default(now())
   updateAt      DateTime    @updatedAt

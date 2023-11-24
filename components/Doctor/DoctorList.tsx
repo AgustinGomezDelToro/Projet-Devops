@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { Box, Button, ButtonGroup, Flex, Heading, IconButton, Input, Spacer, Stack, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon, ViewIcon, EditIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
 
@@ -51,6 +52,7 @@ const DoctorList: React.FC = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredDoctors.slice(indexOfFirstItem, indexOfLastItem);
+    const  router = useRouter();
 
     const handlePreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
     const handleNextPage = () => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredDoctors.length / itemsPerPage)));
@@ -75,7 +77,7 @@ const DoctorList: React.FC = () => {
                             ml={2}
                             colorScheme="teal"
                             leftIcon={<AddIcon />}
-                            onClick={() => {}}
+                            onClick={() => router.push('/doctor/create')}
                         >
                             Ajouter un Médecin
                         </Button>

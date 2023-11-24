@@ -27,6 +27,7 @@ export default async function doctorHandler(req: NextApiRequest, res: NextApiRes
                     orderBy: orderBy,
                 });
 
+
                 res.status(200).json(doctors);
             } catch (error: any) { // Especificamos 'any' como tipo para 'error'
                 console.error("Error durante la recuperación de los médicos:", error.message);

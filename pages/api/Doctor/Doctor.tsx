@@ -4,23 +4,38 @@ import { NextApiRequest, NextApiResponse } from "next";
 const prisma = new PrismaClient();
 
 export default async function doctorHandler(req: NextApiRequest, res: NextApiResponse) {
-    const { method } = req;
+    const { method, query } = req;
 
     switch (method) {
         case 'GET':
             try {
-                const doctor = await prisma.doctorazerty.findMany();// Asegúrate de que 'doctorazerty' sea el nombre correcto del modelo en tu esquema Prisma
-                res.status(200).json(doctor);
-            } catch (error) {
-                if (error instanceof Error) {
-                    console.error("Erreur lors de la récupération des médecins:", error.message);
-                    res.status(500).json({ error: "Erreur lors de la récupération des médecins", details: error.message });
+                let orderBy;
+                const sortMethod = query.sort as string;
+
+                // Determinar el orden basado en el parámetro 'sort'
+                switch (sortMethod) {
+                    case 'name':
+                        orderBy = { name: 'asc' }; // Orden alfabético
+                        break;
+                    case 'createdAt':
+                    default:
+                        orderBy = { createAt: 'desc' }; // Los más recientes primero
+                        break;
                 }
+
+                const doctors = await prisma.doctorazerty.findMany({
+                    orderBy: orderBy,
+                });
+
+                res.status(200).json(doctors);
+            } catch (error) {
+                console.error("Error durante la recuperación de los médicos:", error.message);
+                res.status(500).json({ error: "Error durante la recuperación de los médicos", details: error.message });
             }
             break;
 
         default:
             res.setHeader('Allow', ['GET']);
-            res.status(405).json({ error: `Méthode ${method} non autorisée` });
+            res.status(405).json({ error: `Método ${method} no permitido` });
     }
 }

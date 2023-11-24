@@ -21,7 +21,7 @@ export default async function createDoctorHandler(req: NextApiRequest, res: Next
                         email,
                         telephone,
                         speciality,
-                        eventsHistory: "Historique de RDV",
+                        eventsHistory: "Agenda",
                     }
                 });
                 res.status(201).json(doctor);

@@ -2,7 +2,8 @@ name: Docker Build and Push images Agustin
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-and-push:
@@ -24,3 +25,8 @@ jobs:
           file: Dockerfile
           push: true
           tags: gomezdeltoroagustin/microservices-clinique-dentaire:latest
+
+      - name: Send request to local server
+        run: |
+          # Envia una solicitud HTTP al servidor local en http://localhost:3000/
+          curl -X POST -d {} http://localhost:3000/endpoint
